@@ -1,0 +1,1993 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Entrepreneur Hub">
+    <title>Bennet's Entrepreneur Hub</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', system-ui, sans-serif;
+            background: linear-gradient(135deg, #000428 0%, #004e92 100%);
+            min-height: 100vh;
+            color: #ffffff;
+            overflow-x: hidden;
+            padding: env(safe-area-inset-top, 20px) env(safe-area-inset-right, 16px) env(safe-area-inset-bottom, 20px) env(safe-area-inset-left, 16px);
+        }
+
+        .dashboard-container {
+            max-width: 100%;
+            margin: 0 auto;
+            padding-bottom: 100px;
+        }
+
+        /* iOS Status Bar Safe Area */
+        .status-bar-spacer {
+            height: env(safe-area-inset-top, 20px);
+        }
+
+        /* Header with iPhone-style design */
+        .dashboard-header {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 20px 16px;
+            margin-bottom: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .welcome-section {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        .avatar {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: white;
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .welcome-text h1 {
+            font-size: 22px;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 4px;
+            -webkit-text-stroke: 0.5px rgba(255, 255, 255, 0.1);
+        }
+
+        .welcome-text p {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 14px;
+            font-weight: 400;
+        }
+
+        .quick-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 12px;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 12px 8px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+        }
+
+        .stat-value {
+            font-size: 20px;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 2px;
+        }
+
+        .stat-label {
+            font-size: 10px;
+            color: rgba(255, 255, 255, 0.7);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+        }
+
+        /* Bottom Navigation - iPhone style */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(20px);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 8px 16px;
+            padding-bottom: calc(8px + env(safe-area-inset-bottom, 0px));
+            z-index: 1000;
+        }
+
+        .nav-items {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 8px 4px;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .nav-item.active {
+            background: rgba(102, 126, 234, 0.3);
+            color: #667eea;
+            transform: scale(1.05);
+        }
+
+        .nav-item:active {
+            transform: scale(0.95);
+        }
+
+        .nav-icon {
+            font-size: 20px;
+            margin-bottom: 4px;
+        }
+
+        .nav-label {
+            font-size: 10px;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        /* Card Styles */
+        .dashboard-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .dashboard-card:active {
+            transform: scale(0.98);
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Pages */
+        .page {
+            display: none;
+            animation: slideIn 0.3s ease;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        /* Buttons - iOS style */
+        .action-btn {
+            background: rgba(102, 126, 234, 0.8);
+            border: none;
+            border-radius: 16px;
+            padding: 16px 20px;
+            color: #ffffff;
+            font-size: 16px;
+            font-weight: 600;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 16px rgba(102, 126, 234, 0.3);
+            margin: 8px 0;
+            width: 100%;
+            -webkit-appearance: none;
+        }
+
+        .action-btn:active {
+            transform: scale(0.95);
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.4);
+        }
+
+        .secondary-btn {
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: #ffffff;
+        }
+
+        .secondary-btn:active {
+            background: rgba(255, 255, 255, 0.25);
+        }
+
+        .delete-btn {
+            background: rgba(239, 68, 68, 0.8);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 8px 12px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-left: 8px;
+        }
+
+        .delete-btn:active {
+            transform: scale(0.9);
+            background: rgba(239, 68, 68, 1);
+        }
+
+        /* Form Styles */
+        .form-container {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 8px;
+        }
+
+        .form-group input, .form-group textarea, .form-group select {
+            width: 100%;
+            padding: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+            font-size: 16px;
+            backdrop-filter: blur(10px);
+            -webkit-appearance: none;
+        }
+
+        .form-group input::placeholder, .form-group textarea::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.2);
+        }
+
+        /* Habit Items */
+        .habit-item {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: all 0.3s ease;
+        }
+
+        .habit-item:active {
+            transform: scale(0.98);
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .habit-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex: 1;
+        }
+
+        .habit-icon {
+            font-size: 24px;
+            width: 40px;
+            text-align: center;
+        }
+
+        .habit-details h4 {
+            font-size: 16px;
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 4px;
+        }
+
+        .habit-details p {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .habit-tracker {
+            display: flex;
+            gap: 4px;
+        }
+
+        .day-dot {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.2);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .day-dot.completed {
+            background: #48bb78;
+            color: white;
+            border-color: #48bb78;
+            transform: scale(1.1);
+            box-shadow: 0 4px 12px rgba(72, 187, 120, 0.4);
+        }
+
+        .day-dot.today {
+            border: 2px solid #667eea;
+            box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.3);
+        }
+
+        .day-dot:active {
+            transform: scale(0.9);
+        }
+
+        /* Challenge Widget */
+        .challenge-widget {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.2) 0%, rgba(249, 115, 22, 0.2) 100%);
+            border: 2px solid rgba(245, 158, 11, 0.3);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 16px;
+            backdrop-filter: blur(10px);
+        }
+
+        .challenge-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 16px;
+        }
+
+        .challenge-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 4px;
+        }
+
+        .challenge-status {
+            background: rgba(59, 130, 246, 0.8);
+            color: #ffffff;
+            padding: 6px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .challenge-progress {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 12px 0;
+        }
+
+        .challenge-progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #f59e0b, #f97316);
+            border-radius: 4px;
+            transition: width 0.6s ease;
+        }
+
+        .challenge-days {
+            display: flex;
+            gap: 6px;
+            margin-top: 12px;
+        }
+
+        .challenge-day {
+            width: 28px;
+            height: 28px;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.7);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .challenge-day.completed {
+            background: #48bb78;
+            color: white;
+            border-color: #48bb78;
+            transform: scale(1.1);
+            box-shadow: 0 4px 12px rgba(72, 187, 120, 0.4);
+        }
+
+        .challenge-day:active {
+            transform: scale(0.9);
+        }
+
+        /* Goals */
+        .goal-item {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .goal-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .goal-icon {
+            font-size: 24px;
+            width: 40px;
+            text-align: center;
+        }
+
+        .goal-info {
+            flex: 1;
+        }
+
+        .goal-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 4px;
+        }
+
+        .goal-description {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .goal-progress-container {
+            margin-top: 12px;
+        }
+
+        .goal-progress-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 8px 0;
+        }
+
+        .goal-progress-fill {
+            height: 100%;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+
+        .goal-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        /* Ideas/Brainstorming */
+        .idea-item {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .idea-item:active {
+            transform: scale(0.98);
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .idea-content {
+            font-size: 15px;
+            color: #ffffff;
+            line-height: 1.4;
+            margin-bottom: 12px;
+        }
+
+        .idea-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .idea-priority {
+            padding: 4px 8px;
+            border-radius: 8px;
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .priority-low { background: rgba(34, 197, 94, 0.3); color: #22c55e; }
+        .priority-medium { background: rgba(245, 158, 11, 0.3); color: #f59e0b; }
+        .priority-high { background: rgba(239, 68, 68, 0.3); color: #ef4444; }
+
+        /* Success Message */
+        .success-message {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.9);
+            color: white;
+            padding: 16px 24px;
+            border-radius: 16px;
+            font-size: 16px;
+            font-weight: 600;
+            z-index: 2000;
+            animation: successMessage 2.5s ease forwards;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        @keyframes successMessage {
+            0% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
+            15% { opacity: 1; transform: translate(-50%, -50%) scale(1.05); }
+            85% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+            100% { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
+        }
+
+        /* No content states */
+        .no-content {
+            text-align: center;
+            padding: 40px 20px;
+            color: rgba(255, 255, 255, 0.7);
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            border: 2px dashed rgba(255, 255, 255, 0.2);
+        }
+
+        .no-content .emoji {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        /* Editable elements */
+        .editable {
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-radius: 8px;
+            padding: 4px;
+            margin: -4px;
+        }
+
+        .editable:active {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .editable.editing {
+            background: rgba(102, 126, 234, 0.2);
+        }
+
+        .editable input, .editable textarea {
+            background: transparent;
+            border: none;
+            outline: none;
+            font: inherit;
+            color: inherit;
+            width: 100%;
+            resize: none;
+        }
+
+        /* Grid layouts for mobile */
+        .mobile-grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .mobile-grid-3 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 8px;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 375px) {
+            .dashboard-container {
+                padding: 0 12px;
+            }
+
+            .challenge-days, .habit-tracker {
+                gap: 3px;
+            }
+
+            .challenge-day, .day-dot {
+                width: 24px;
+                height: 24px;
+                font-size: 10px;
+            }
+
+            .card-title {
+                font-size: 16px;
+            }
+        }
+
+        /* Dark mode optimizations */
+        @media (prefers-color-scheme: dark) {
+            body {
+                background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%);
+            }
+        }
+
+        /* Smooth scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Hide scrollbar but keep functionality */
+        ::-webkit-scrollbar {
+            width: 0px;
+            background: transparent;
+        }
+    </style>
+</head>
+<body>
+    <div class="status-bar-spacer"></div>
+    
+    <div class="dashboard-container">
+        <!-- Header -->
+        <div class="dashboard-header">
+            <div class="welcome-section">
+                <div class="avatar">🚀</div>
+                <div class="welcome-text">
+                    <h1 class="editable" onclick="editText(this)">Welcome back, Bennet!</h1>
+                    <p id="currentDate"></p>
+                </div>
+            </div>
+            <div class="quick-stats">
+                <div class="stat-item">
+                    <div class="stat-value" id="habitStreak">7</div>
+                    <div class="stat-label">Streak</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="completionRate">85%</div>
+                    <div class="stat-label">Rate</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="todayTasks">5/8</div>
+                    <div class="stat-label">Today</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- OVERVIEW PAGE -->
+        <div id="overviewPage" class="page active">
+            <!-- Current Challenge Widget -->
+            <div class="dashboard-card">
+                <div class="card-title">🔥 Aktuelle Challenge</div>
+                <div id="currentChallengeWidget">
+                    <!-- Challenge content wird hier dynamisch eingefügt -->
+                </div>
+                <button class="action-btn" onclick="createNewChallenge()">Neue Challenge starten</button>
+            </div>
+
+            <!-- Today's Habits -->
+            <div class="dashboard-card">
+                <div class="card-title">🔄 Heute's Habits</div>
+                <div id="todayHabitsContainer">
+                    <!-- Today's habits werden hier angezeigt -->
+                </div>
+            </div>
+
+            <!-- Goals Overview -->
+            <div class="dashboard-card">
+                <div class="card-title">🎯 Ziele Progress</div>
+                <div id="goalsOverview">
+                    <!-- Goals overview wird hier angezeigt -->
+                </div>
+            </div>
+
+            <!-- Daily Motivation -->
+            <div class="dashboard-card">
+                <div class="card-title">💡 Daily Motivation</div>
+                <div style="text-align: center; margin-bottom: 20px;">
+                    <div style="font-size: 32px; margin-bottom: 12px;">🎯</div>
+                    <h3 style="color: #ffffff; margin-bottom: 12px; font-size: 18px;" id="motivationTitle" class="editable" onclick="editText(this)">Build Systems, Not Goals</h3>
+                    <p style="color: rgba(255, 255, 255, 0.8); font-size: 14px; line-height: 1.5; margin-bottom: 8px;" id="motivationText" class="editable" onclick="editText(this)">
+                        "You do not rise to the level of your goals. You fall to the level of your systems."
+                    </p>
+                    <p style="color: #667eea; font-size: 12px; font-weight: 600;" id="motivationAuthor" class="editable" onclick="editText(this)">
+                        — James Clear
+                    </p>
+                </div>
+                <button class="action-btn secondary-btn" onclick="getNewQuote()">Neues Zitat</button>
+            </div>
+        </div>
+
+        <!-- HABITS PAGE -->
+        <div id="habitsPage" class="page">
+            <div class="dashboard-card">
+                <div class="card-title">🔄 Habits verwalten</div>
+                
+                <!-- Add New Habit Form -->
+                <div class="form-container">
+                    <div class="form-group">
+                        <label>Icon (Emoji)</label>
+                        <input type="text" id="newHabitIcon" placeholder="🌟" maxlength="2">
+                    </div>
+                    <div class="form-group">
+                        <label>Habit Name</label>
+                        <input type="text" id="newHabitName" placeholder="Neues Habit">
+                    </div>
+                    <div class="form-group">
+                        <label>Beschreibung</label>
+                        <input type="text" id="newHabitDescription" placeholder="Beschreibung...">
+                    </div>
+                    <button class="action-btn" onclick="addNewHabit()">Habit hinzufügen</button>
+                </div>
+
+                <div id="allHabitsContainer">
+                    <!-- Alle habits werden hier angezeigt -->
+                </div>
+            </div>
+        </div>
+
+        <!-- CHALLENGES PAGE -->
+        <div id="challengesPage" class="page">
+            <div class="dashboard-card">
+                <div class="card-title">🔥 Challenge Management</div>
+                
+                <!-- Create New Challenge Form -->
+                <div class="form-container">
+                    <div class="form-group">
+                        <label>Challenge Titel</label>
+                        <input type="text" id="newChallengeTitle" placeholder="7 Tage Morgenroutine">
+                    </div>
+                    <div class="form-group">
+                        <label>Kategorie</label>
+                        <select id="newChallengeCategory">
+                            <option value="health">Gesundheit</option>
+                            <option value="productivity">Produktivität</option>
+                            <option value="mindset">Mindset</option>
+                            <option value="business">Business</option>
+                            <option value="learning">Lernen</option>
+                            <option value="custom">Custom</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Beschreibung</label>
+                        <textarea id="newChallengeDescription" placeholder="Beschreibe deine Challenge..."></textarea>
+                    </div>
+                    <button class="action-btn" onclick="createNewChallenge()">Challenge starten</button>
+                </div>
+
+                <div id="challengesContainer">
+                    <!-- Challenges werden hier angezeigt -->
+                </div>
+            </div>
+        </div>
+
+        <!-- GOALS PAGE -->
+        <div id="goalsPage" class="page">
+            <div class="dashboard-card">
+                <div class="card-title">🎯 Ziele verwalten</div>
+                
+                <!-- Add New Goal Form -->
+                <div class="form-container">
+                    <div class="mobile-grid-2">
+                        <div class="form-group">
+                            <label>Icon</label>
+                            <input type="text" id="newGoalIcon" placeholder="🎯" maxlength="2">
+                        </div>
+                        <div class="form-group">
+                            <label>Kategorie</label>
+                            <select id="newGoalCategory">
+                                <option value="business">Business</option>
+                                <option value="health">Gesundheit</option>
+                                <option value="learning">Lernen</option>
+                                <option value="finance">Finanzen</option>
+                                <option value="personal">Persönlich</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Ziel Titel</label>
+                        <input type="text" id="newGoalTitle" placeholder="Neues Ziel">
+                    </div>
+                    <div class="form-group">
+                        <label>Beschreibung</label>
+                        <input type="text" id="newGoalDescription" placeholder="Beschreibung des Ziels">
+                    </div>
+                    <div class="mobile-grid-2">
+                        <div class="form-group">
+                            <label>Zieldatum</label>
+                            <input type="text" id="newGoalTarget" placeholder="Dezember 2025">
+                        </div>
+                        <div class="form-group">
+                            <label>Fortschritt (%)</label>
+                            <input type="number" id="newGoalProgress" min="0" max="100" value="0">
+                        </div>
+                    </div>
+                    <button class="action-btn" onclick="addNewGoal()">Ziel hinzufügen</button>
+                </div>
+
+                <div id="goalsContainer">
+                    <!-- Goals werden hier dynamisch eingefügt -->
+                </div>
+            </div>
+        </div>
+
+        <!-- BRAINSTORM PAGE -->
+        <div id="brainstormPage" class="page">
+            <div class="dashboard-card">
+                <div class="card-title">💡 Neue Idee</div>
+                <div class="form-container">
+                    <div class="form-group">
+                        <label>Deine Idee</label>
+                        <textarea id="newIdeaContent" placeholder="Beschreibe deine Idee..." rows="3"></textarea>
+                    </div>
+                    <div class="mobile-grid-2">
+                        <div class="form-group">
+                            <label>Kategorie</label>
+                            <select id="newIdeaCategory">
+                                <option value="business">Business</option>
+                                <option value="product">Produkt</option>
+                                <option value="marketing">Marketing</option>
+                                <option value="improvement">Verbesserung</option>
+                                <option value="personal">Persönlich</option>
+                                <option value="random">Random</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Priorität</label>
+                            <select id="newIdeaPriority">
+                                <option value="low">Niedrig</option>
+                                <option value="medium">Mittel</option>
+                                <option value="high">Hoch</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button class="action-btn" onclick="addNewIdea()">Idee hinzufügen</button>
+                </div>
+            </div>
+
+            <div class="dashboard-card">
+                <div class="card-title">🧠 Meine Ideen</div>
+                <div id="ideaBoard">
+                    <!-- Ideen werden hier angezeigt -->
+                </div>
+            </div>
+
+            <div class="dashboard-card">
+                <div class="card-title">📊 Ideen Statistiken</div>
+                <div id="ideaStats">
+                    <!-- Statistiken werden hier angezeigt -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <div class="bottom-nav">
+        <div class="nav-items">
+            <div class="nav-item active" onclick="showPage('overview')">
+                <div class="nav-icon">🏠</div>
+                <div class="nav-label">Home</div>
+            </div>
+            <div class="nav-item" onclick="showPage('habits')">
+                <div class="nav-icon">🔄</div>
+                <div class="nav-label">Habits</div>
+            </div>
+            <div class="nav-item" onclick="showPage('challenges')">
+                <div class="nav-icon">🔥</div>
+                <div class="nav-label">Challenges</div>
+            </div>
+            <div class="nav-item" onclick="showPage('goals')">
+                <div class="nav-icon">🎯</div>
+                <div class="nav-label">Goals</div>
+            </div>
+            <div class="nav-item" onclick="showPage('brainstorm')">
+                <div class="nav-icon">💡</div>
+                <div class="nav-label">Ideas</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Data Storage Keys
+        const STORAGE_KEYS = {
+            habits: 'entrepreneurDashboard_habits',
+            goals: 'entrepreneurDashboard_goals',
+            challenges: 'entrepreneurDashboard_challenges',
+            ideas: 'entrepreneurDashboard_ideas',
+            settings: 'entrepreneurDashboard_settings'
+        };
+
+        // Initialize Data
+        let habits = JSON.parse(localStorage.getItem(STORAGE_KEYS.habits)) || [
+            {
+                id: 1,
+                icon: "🌅",
+                name: "Morning Routine",
+                description: "6:00 AM - 30 min",
+                streak: [1, 1, 1, 1, 1, 1, 0],
+                category: "morning"
+            },
+            {
+                id: 2,
+                icon: "📚",
+                name: "Learning/Reading",
+                description: "30 min daily",
+                streak: [1, 1, 0, 1, 1, 1, 1],
+                category: "growth"
+            },
+            {
+                id: 3,
+                icon: "🏃‍♂️",
+                name: "Exercise",
+                description: "45 min workout",
+                streak: [1, 0, 1, 1, 1, 0, 1],
+                category: "health"
+            },
+            {
+                id: 4,
+                icon: "🧘‍♂️",
+                name: "Meditation",
+                description: "10 min mindfulness",
+                streak: [1, 1, 1, 0, 1, 1, 1],
+                category: "mindset"
+            }
+        ];
+
+        let goals = JSON.parse(localStorage.getItem(STORAGE_KEYS.goals)) || [
+            {
+                id: 1,
+                icon: "💰",
+                title: "Revenue Goal",
+                description: "€100k ARR erreichen",
+                progress: 25,
+                target: "December 2025",
+                category: "business"
+            },
+            {
+                id: 2,
+                icon: "📚",
+                title: "Learning Goal",
+                description: "24 Bücher lesen",
+                progress: 33,
+                target: "End of Year",
+                category: "growth"
+            },
+            {
+                id: 3,
+                icon: "🏃‍♂️",
+                title: "Fitness Goal",
+                description: "10kg abnehmen",
+                progress: 60,
+                target: "June 2025",
+                category: "health"
+            }
+        ];
+
+        let challenges = JSON.parse(localStorage.getItem(STORAGE_KEYS.challenges)) || [];
+
+        let ideas = JSON.parse(localStorage.getItem(STORAGE_KEYS.ideas)) || [
+            {
+                id: 1,
+                content: "AI-gestützter Habit Tracker mit personalisierten Empfehlungen",
+                category: "product",
+                priority: "high",
+                timestamp: Date.now()
+            },
+            {
+                id: 2,
+                content: "YouTube Kanal für Entrepreneur Journey",
+                category: "marketing",
+                priority: "medium",
+                timestamp: Date.now()
+            },
+            {
+                id: 3,
+                content: "Networking Events in der Region organisieren",
+                category: "business",
+                priority: "low",
+                timestamp: Date.now()
+            }
+        ];
+
+        let motivationalQuotes = [
+            {
+                title: "Build Systems, Not Goals",
+                text: "You do not rise to the level of your goals. You fall to the level of your systems.",
+                author: "James Clear"
+            },
+            {
+                title: "Start Before You're Ready",
+                text: "The way to get started is to quit talking and begin doing.",
+                author: "Walt Disney"
+            },
+            {
+                title: "Perfect Timing Is Myth",
+                text: "You don't have to be great to get started, but you have to get started to be great.",
+                author: "Les Brown"
+            },
+            {
+                title: "Embrace Failure",
+                text: "Failure is simply the opportunity to begin again, this time more intelligently.",
+                author: "Henry Ford"
+            },
+            {
+                title: "Action Over Perfection",
+                text: "Done is better than perfect.",
+                author: "Sheryl Sandberg"
+            }
+        ];
+
+        // Save Data Functions
+        function saveData() {
+            localStorage.setItem(STORAGE_KEYS.habits, JSON.stringify(habits));
+            localStorage.setItem(STORAGE_KEYS.goals, JSON.stringify(goals));
+            localStorage.setItem(STORAGE_KEYS.challenges, JSON.stringify(challenges));
+            localStorage.setItem(STORAGE_KEYS.ideas, JSON.stringify(ideas));
+        }
+
+        // Inline Editing Functions
+        function editText(element) {
+            if (element.classList.contains('editing')) return;
+            
+            element.classList.add('editing');
+            const currentText = element.textContent;
+            
+            if (element.tagName === 'H1' || element.tagName === 'H3') {
+                const input = document.createElement('input');
+                input.type = 'text';
+                input.value = currentText;
+                input.style.fontSize = getComputedStyle(element).fontSize;
+                input.style.fontWeight = getComputedStyle(element).fontWeight;
+                
+                element.innerHTML = '';
+                element.appendChild(input);
+                input.focus();
+                input.select();
+                
+                input.onblur = input.onkeydown = function(e) {
+                    if (e.type === 'keydown' && e.key !== 'Enter') return;
+                    element.textContent = input.value || currentText;
+                    element.classList.remove('editing');
+                };
+            } else {
+                const textarea = document.createElement('textarea');
+                textarea.value = currentText;
+                textarea.style.fontSize = getComputedStyle(element).fontSize;
+                textarea.style.height = 'auto';
+                
+                element.innerHTML = '';
+                element.appendChild(textarea);
+                textarea.focus();
+                textarea.select();
+                
+                textarea.style.height = textarea.scrollHeight + 'px';
+                
+                textarea.onblur = textarea.onkeydown = function(e) {
+                    if (e.type === 'keydown' && e.key !== 'Enter') return;
+                    if (e.type === 'keydown' && e.shiftKey) return;
+                    element.textContent = textarea.value || currentText;
+                    element.classList.remove('editing');
+                };
+            }
+        }
+
+        // Challenge Functions
+        function getCurrentChallenge() {
+            return challenges.find(c => c.status === 'active') || null;
+        }
+
+        function createNewChallenge() {
+            const title = document.getElementById('newChallengeTitle')?.value || prompt('Challenge Titel:');
+            const description = document.getElementById('newChallengeDescription')?.value || prompt('Beschreibung:');
+            const category = document.getElementById('newChallengeCategory')?.value || 'custom';
+            
+            if (!title) return;
+            
+            const currentChallenge = getCurrentChallenge();
+            if (currentChallenge) {
+                currentChallenge.status = 'completed';
+            }
+            
+            const newChallenge = {
+                id: challenges.length + 1,
+                title: title,
+                description: description,
+                category: category,
+                startDate: new Date().toISOString(),
+                status: 'active',
+                progress: Array.from({length: 7}, (_, i) => ({
+                    day: i + 1,
+                    dayName: ['Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag', 'Sonntag'][i],
+                    completed: false
+                }))
+            };
+            
+            challenges.push(newChallenge);
+            saveData();
+            
+            if (document.getElementById('newChallengeTitle')) {
+                document.getElementById('newChallengeTitle').value = '';
+                document.getElementById('newChallengeDescription').value = '';
+            }
+            
+            renderCurrentChallengeWidget();
+            renderChallenges();
+            showMessage('🔥 Neue Challenge gestartet!');
+        }
+
+        function toggleChallengeDay(challengeId, dayIndex) {
+            const challenge = challenges.find(c => c.id === challengeId);
+            if (challenge && challenge.status === 'active') {
+                challenge.progress[dayIndex].completed = !challenge.progress[dayIndex].completed;
+                saveData();
+                renderCurrentChallengeWidget();
+                renderChallenges();
+                showMessage(challenge.progress[dayIndex].completed ? '✅ Tag abgeschlossen!' : '↩️ Tag zurückgesetzt');
+            }
+        }
+
+        function renderCurrentChallengeWidget() {
+            const container = document.getElementById('currentChallengeWidget');
+            const currentChallenge = getCurrentChallenge();
+
+            if (!currentChallenge) {
+                container.innerHTML = `
+                    <div class="no-content">
+                        <div class="emoji">🎯</div>
+                        <h3>Keine aktive Challenge</h3>
+                        <p>Starte eine neue Wochen-Challenge!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            const completedDays = currentChallenge.progress.filter(day => day.completed).length;
+            const progressPercentage = Math.round((completedDays / 7) * 100);
+            const startDate = new Date(currentChallenge.startDate);
+
+            container.innerHTML = `
+                <div class="challenge-widget">
+                    <div class="challenge-header">
+                        <div>
+                            <div class="challenge-title editable" onclick="editText(this)">${currentChallenge.title}</div>
+                            <div style="font-size: 12px; color: rgba(255, 255, 255, 0.7);">
+                                Gestartet: ${startDate.toLocaleDateString('de-DE')}
+                            </div>
+                        </div>
+                        <div class="challenge-status">Läuft</div>
+                    </div>
+                    
+                    ${currentChallenge.description ? `
+                        <div style="color: rgba(255, 255, 255, 0.8); font-size: 14px; margin-bottom: 16px;" class="editable" onclick="editText(this)">
+                            ${currentChallenge.description}
+                        </div>
+                    ` : ''}
+                    
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                        <span style="font-size: 14px; font-weight: 600; color: #ffffff;">Fortschritt</span>
+                        <span style="font-size: 18px; font-weight: 700; color: #f59e0b;">${progressPercentage}%</span>
+                    </div>
+                    
+                    <div class="challenge-progress">
+                        <div class="challenge-progress-fill" style="width: ${progressPercentage}%"></div>
+                    </div>
+                    
+                    <div class="challenge-days">
+                        ${currentChallenge.progress.map((day, index) => `
+                            <div class="challenge-day ${day.completed ? 'completed' : ''}" 
+                                 onclick="toggleChallengeDay(${currentChallenge.id}, ${index})"
+                                 title="${day.dayName}">
+                                ${index + 1}
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderChallenges() {
+            const container = document.getElementById('challengesContainer');
+            if (!container) return;
+            
+            if (challenges.length === 0) {
+                container.innerHTML = `
+                    <div class="no-content">
+                        <div class="emoji">🏆</div>
+                        <h3>Noch keine Challenges</h3>
+                        <p>Erstelle deine erste Challenge!</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = '';
+            
+            challenges.slice().reverse().forEach(challenge => {
+                const completedDays = challenge.progress.filter(day => day.completed).length;
+                const progressPercentage = Math.round((completedDays / 7) * 100);
+                const startDate = new Date(challenge.startDate);
+                
+                const challengeElement = document.createElement('div');
+                challengeElement.className = 'challenge-widget';
+                challengeElement.style.marginBottom = '16px';
+                
+                challengeElement.innerHTML = `
+                    <div class="challenge-header">
+                        <div>
+                            <div class="challenge-title">${challenge.title}</div>
+                            <div style="font-size: 12px; color: rgba(255, 255, 255, 0.7);">
+                                ${startDate.toLocaleDateString('de-DE')}
+                            </div>
+                        </div>
+                        <div class="challenge-status" style="background: ${challenge.status === 'active' ? 'rgba(59, 130, 246, 0.8)' : 'rgba(34, 197, 94, 0.8)'};">
+                            ${challenge.status === 'active' ? 'Läuft' : 'Fertig'}
+                        </div>
+                    </div>
+                    
+                    ${challenge.description ? `
+                        <div style="color: rgba(255, 255, 255, 0.8); font-size: 14px; margin-bottom: 16px;">
+                            ${challenge.description}
+                        </div>
+                    ` : ''}
+                    
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                        <span style="font-size: 14px; font-weight: 600; color: #ffffff;">Fortschritt</span>
+                        <span style="font-size: 18px; font-weight: 700; color: #f59e0b;">${progressPercentage}%</span>
+                    </div>
+                    
+                    <div class="challenge-progress">
+                        <div class="challenge-progress-fill" style="width: ${progressPercentage}%"></div>
+                    </div>
+                    
+                    <div class="challenge-days">
+                        ${challenge.progress.map((day, index) => `
+                            <div class="challenge-day ${day.completed ? 'completed' : ''}" 
+                                 ${challenge.status === 'active' ? `onclick="toggleChallengeDay(${challenge.id}, ${index})"` : ''}
+                                 title="${day.dayName}">
+                                ${index + 1}
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+                
+                container.appendChild(challengeElement);
+            });
+        }
+
+        // Habit Functions
+        function renderTodayHabits() {
+            const container = document.getElementById('todayHabitsContainer');
+            
+            if (habits.length === 0) {
+                container.innerHTML = `
+                    <div class="no-content">
+                        <div class="emoji">🌟</div>
+                        <h3>Noch keine Habits</h3>
+                        <p>Füge dein erstes Habit hinzu!</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = '';
+            
+            habits.slice(0, 6).forEach(habit => {
+                const todayCompleted = habit.streak[6];
+                
+                const habitElement = document.createElement('div');
+                habitElement.className = 'habit-item';
+                
+                habitElement.innerHTML = `
+                    <div class="habit-info">
+                        <div class="habit-icon">${habit.icon}</div>
+                        <div class="habit-details">
+                            <h4>${habit.name}</h4>
+                            <p>${habit.description}</p>
+                        </div>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <div style="width: 36px; height: 36px; border-radius: 12px; background: ${todayCompleted ? '#48bb78' : 'rgba(255, 255, 255, 0.2)'}; display: flex; align-items: center; justify-content: center; color: ${todayCompleted ? 'white' : 'rgba(255, 255, 255, 0.7)'}; font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; border: 1px solid ${todayCompleted ? '#48bb78' : 'rgba(255, 255, 255, 0.3)'};" onclick="toggleHabitToday(${habit.id})">
+                            ${todayCompleted ? '✓' : '○'}
+                        </div>
+                    </div>
+                `;
+                
+                container.appendChild(habitElement);
+            });
+        }
+
+        function renderAllHabits() {
+            const container = document.getElementById('allHabitsContainer');
+            
+            if (habits.length === 0) {
+                container.innerHTML = `
+                    <div class="no-content">
+                        <div class="emoji">🌟</div>
+                        <h3>Noch keine Habits</h3>
+                        <p>Füge dein erstes Habit hinzu!</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = '';
+            
+            habits.forEach(habit => {
+                const habitElement = document.createElement('div');
+                habitElement.className = 'habit-item';
+                
+                habitElement.innerHTML = `
+                    <div class="habit-info">
+                        <div class="habit-icon editable" onclick="editHabitField(${habit.id}, 'icon', this)">${habit.icon}</div>
+                        <div class="habit-details">
+                            <h4 class="editable" onclick="editHabitField(${habit.id}, 'name', this)">${habit.name}</h4>
+                            <p class="editable" onclick="editHabitField(${habit.id}, 'description', this)">${habit.description}</p>
+                        </div>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <div class="habit-tracker">
+                            ${habit.streak.map((completed, index) => `
+                                <div class="day-dot ${completed ? 'completed' : ''} ${index === 6 ? 'today' : ''}" 
+                                     onclick="toggleHabitDay(${habit.id}, ${index})"
+                                     title="${['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'][index]}">
+                                    ${['M', 'D', 'M', 'D', 'F', 'S', 'S'][index]}
+                                </div>
+                            `).join('')}
+                        </div>
+                        <button class="delete-btn" onclick="deleteHabit(${habit.id})">🗑️</button>
+                    </div>
+                `;
+                
+                container.appendChild(habitElement);
+            });
+        }
+
+        function addNewHabit() {
+            const icon = document.getElementById('newHabitIcon').value || '⭐';
+            const name = document.getElementById('newHabitName').value;
+            const description = document.getElementById('newHabitDescription').value;
+            
+            if (!name) {
+                showMessage('❌ Bitte gib einen Namen ein!');
+                return;
+            }
+            
+            const newHabit = {
+                id: Math.max(...habits.map(h => h.id), 0) + 1,
+                icon: icon,
+                name: name,
+                description: description || 'Neues Habit',
+                streak: [0, 0, 0, 0, 0, 0, 0],
+                category: 'custom'
+            };
+            
+            habits.push(newHabit);
+            saveData();
+            
+            document.getElementById('newHabitIcon').value = '';
+            document.getElementById('newHabitName').value = '';
+            document.getElementById('newHabitDescription').value = '';
+            
+            renderAllHabits();
+            renderTodayHabits();
+            updateStats();
+            showMessage('🎉 Neues Habit hinzugefügt!');
+        }
+
+        function deleteHabit(habitId) {
+            habits = habits.filter(h => h.id !== habitId);
+            saveData();
+            renderAllHabits();
+            renderTodayHabits();
+            updateStats();
+            showMessage('🗑️ Habit gelöscht!');
+        }
+
+        function editHabitField(habitId, field, element) {
+            const habit = habits.find(h => h.id === habitId);
+            if (!habit) return;
+            
+            element.classList.add('editing');
+            const currentText = element.textContent;
+            
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.value = currentText;
+            input.style.fontSize = getComputedStyle(element).fontSize;
+            input.style.fontWeight = getComputedStyle(element).fontWeight;
+            
+            element.innerHTML = '';
+            element.appendChild(input);
+            input.focus();
+            input.select();
+            
+            input.onblur = input.onkeydown = function(e) {
+                if (e.type === 'keydown' && e.key !== 'Enter') return;
+                const newValue = input.value || currentText;
+                habit[field] = newValue;
+                element.textContent = newValue;
+                element.classList.remove('editing');
+                saveData();
+                if (field === 'name' || field === 'description') {
+                    renderTodayHabits();
+                }
+            };
+        }
+
+        function toggleHabitToday(habitId) {
+            const habit = habits.find(h => h.id === habitId);
+            if (habit) {
+                habit.streak[6] = habit.streak[6] ? 0 : 1;
+                saveData();
+                renderTodayHabits();
+                updateStats();
+                showMessage(habit.streak[6] ? `✅ ${habit.name} abgeschlossen!` : `↩️ ${habit.name} zurückgesetzt`);
+            }
+        }
+
+        function toggleHabitDay(habitId, dayIndex) {
+            const habit = habits.find(h => h.id === habitId);
+            if (habit) {
+                habit.streak[dayIndex] = habit.streak[dayIndex] ? 0 : 1;
+                saveData();
+                renderAllHabits();
+                updateStats();
+                showMessage(habit.streak[dayIndex] ? '✅ Tag abgeschlossen!' : '↩️ Tag zurückgesetzt');
+            }
+        }
+
+        // Goal Functions
+        function renderGoalsOverview() {
+            const container = document.getElementById('goalsOverview');
+            
+            if (goals.length === 0) {
+                container.innerHTML = `
+                    <div class="no-content">
+                        <div class="emoji">🎯</div>
+                        <h3>Noch keine Ziele</h3>
+                        <p>Setze dir dein erstes Ziel!</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = '';
+            
+            goals.slice(0, 3).forEach(goal => {
+                const goalElement = document.createElement('div');
+                goalElement.className = 'goal-item';
+                
+                goalElement.innerHTML = `
+                    <div class="goal-header">
+                        <div class="goal-icon">${goal.icon}</div>
+                        <div class="goal-info">
+                            <div class="goal-title">${goal.title}</div>
+                            <div class="goal-description">${goal.description}</div>
+                        </div>
+                        <div style="text-align: right;">
+                            <div style="font-size: 18px; font-weight: 700; color: #667eea;">${goal.progress}%</div>
+                            <div style="font-size: 12px; color: rgba(255, 255, 255, 0.7);">${goal.target}</div>
+                        </div>
+                    </div>
+                    <div class="goal-progress-container">
+                        <div class="goal-progress-bar">
+                            <div class="goal-progress-fill" style="width: ${goal.progress}%"></div>
+                        </div>
+                    </div>
+                `;
+                
+                container.appendChild(goalElement);
+            });
+        }
+
+        function renderGoalsPage() {
+            const container = document.getElementById('goalsContainer');
+            
+            if (goals.length === 0) {
+                container.innerHTML = `
+                    <div class="no-content">
+                        <div class="emoji">🎯</div>
+                        <h3>Noch keine Ziele</h3>
+                        <p>Setze dir dein erstes Ziel!</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = '';
+            
+            goals.forEach(goal => {
+                const goalElement = document.createElement('div');
+                goalElement.className = 'goal-item';
+                goalElement.style.position = 'relative';
+                
+                goalElement.innerHTML = `
+                    <button class="delete-btn" onclick="deleteGoal(${goal.id})" style="position: absolute; top: 12px; right: 12px;">🗑️</button>
+                    <div class="goal-header">
+                        <div class="goal-icon editable" onclick="editGoalField(${goal.id}, 'icon', this)">${goal.icon}</div>
+                        <div class="goal-info" style="flex: 1;">
+                            <div class="goal-title editable" onclick="editGoalField(${goal.id}, 'title', this)">${goal.title}</div>
+                            <div class="goal-description editable" onclick="editGoalField(${goal.id}, 'description', this)">${goal.description}</div>
+                        </div>
+                        <div style="text-align: right;">
+                            <div style="font-size: 20px; font-weight: 700; color: #667eea; cursor: pointer;" onclick="editGoalProgress(${goal.id})">${goal.progress}%</div>
+                            <div style="font-size: 12px; color: rgba(255, 255, 255, 0.7);" class="editable" onclick="editGoalField(${goal.id}, 'target', this)">${goal.target}</div>
+                        </div>
+                    </div>
+                    <div class="goal-progress-container">
+                        <div class="goal-progress-bar">
+                            <div class="goal-progress-fill" style="width: ${goal.progress}%"></div>
+                        </div>
+                    </div>
+                `;
+                
+                container.appendChild(goalElement);
+            });
+        }
+
+        function addNewGoal() {
+            const icon = document.getElementById('newGoalIcon').value || '🎯';
+            const title = document.getElementById('newGoalTitle').value;
+            const description = document.getElementById('newGoalDescription').value;
+            const target = document.getElementById('newGoalTarget').value || 'Ende 2025';
+            const progress = parseInt(document.getElementById('newGoalProgress').value) || 0;
+            const category = document.getElementById('newGoalCategory').value;
+            
+            if (!title) {
+                showMessage('❌ Bitte gib einen Titel ein!');
+                return;
+            }
+            
+            const newGoal = {
+                id: Math.max(...goals.map(g => g.id), 0) + 1,
+                icon: icon,
+                title: title,
+                description: description || 'Neues Ziel',
+                progress: Math.min(Math.max(progress, 0), 100),
+                target: target,
+                category: category
+            };
+            
+            goals.push(newGoal);
+            saveData();
+            
+            document.getElementById('newGoalIcon').value = '';
+            document.getElementById('newGoalTitle').value = '';
+            document.getElementById('newGoalDescription').value = '';
+            document.getElementById('newGoalTarget').value = '';
+            document.getElementById('newGoalProgress').value = '0';
+            
+            renderGoalsPage();
+            renderGoalsOverview();
+            showMessage('🎯 Neues Ziel hinzugefügt!');
+        }
+
+        function deleteGoal(goalId) {
+            goals = goals.filter(g => g.id !== goalId);
+            saveData();
+            renderGoalsPage();
+            renderGoalsOverview();
+            showMessage('🗑️ Ziel gelöscht!');
+        }
+
+        function editGoalField(goalId, field, element) {
+            const goal = goals.find(g => g.id === goalId);
+            if (!goal) return;
+            
+            element.classList.add('editing');
+            const currentText = element.textContent;
+            
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.value = currentText;
+            input.style.fontSize = getComputedStyle(element).fontSize;
+            input.style.fontWeight = getComputedStyle(element).fontWeight;
+            
+            element.innerHTML = '';
+            element.appendChild(input);
+            input.focus();
+            input.select();
+            
+            input.onblur = input.onkeydown = function(e) {
+                if (e.type === 'keydown' && e.key !== 'Enter') return;
+                const newValue = input.value || currentText;
+                goal[field] = newValue;
+                element.textContent = newValue;
+                element.classList.remove('editing');
+                saveData();
+                renderGoalsOverview();
+            };
+        }
+
+        function editGoalProgress(goalId) {
+            const goal = goals.find(g => g.id === goalId);
+            if (!goal) return;
+            
+            const newProgress = prompt('Neuer Fortschritt (0-100%):', goal.progress);
+            if (newProgress !== null) {
+                const progress = parseInt(newProgress);
+                if (!isNaN(progress) && progress >= 0 && progress <= 100) {
+                    goal.progress = progress;
+                    saveData();
+                    renderGoalsPage();
+                    renderGoalsOverview();
+                    showMessage(`📊 Fortschritt auf ${progress}% aktualisiert!`);
+                } else {
+                    showMessage('❌ Bitte gib eine Zahl zwischen 0 und 100 ein!');
+                }
+            }
+        }
+
+        // Brainstorming Functions
+        function renderIdeas() {
+            const container = document.getElementById('ideaBoard');
+            
+            if (ideas.length === 0) {
+                container.innerHTML = `
+                    <div class="no-content">
+                        <div class="emoji">💡</div>
+                        <h3>Noch keine Ideen</h3>
+                        <p>Füge deine erste Idee hinzu!</p>
+                    </div>
+                `;
+                renderIdeaStats();
+                return;
+            }
+            
+            container.innerHTML = '';
+            
+            ideas.sort((a, b) => {
+                const priorityOrder = { high: 3, medium: 2, low: 1 };
+                return priorityOrder[b.priority] - priorityOrder[a.priority];
+            }).forEach(idea => {
+                const ideaElement = document.createElement('div');
+                ideaElement.className = 'idea-item';
+                
+                const date = new Date(idea.timestamp);
+                
+                ideaElement.innerHTML = `
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+                        <span class="idea-priority priority-${idea.priority}">${idea.priority}</span>
+                        <button class="delete-btn" onclick="deleteIdea(${idea.id})" style="padding: 4px 8px; font-size: 10px;">🗑️</button>
+                    </div>
+                    <div class="idea-content editable" onclick="editIdeaContent(${idea.id}, this)">${idea.content}</div>
+                    <div class="idea-meta">
+                        <span style="font-size: 11px; background: rgba(102, 126, 234, 0.3); color: #667eea; padding: 2px 6px; border-radius: 8px;">${idea.category}</span>
+                        <span style="font-size: 10px;">${date.toLocaleDateString('de-DE')}</span>
+                    </div>
+                `;
+                
+                container.appendChild(ideaElement);
+            });
+            
+            renderIdeaStats();
+        }
+
+        function renderIdeaStats() {
+            const container = document.getElementById('ideaStats');
+            
+            const totalIdeas = ideas.length;
+            const highPriority = ideas.filter(i => i.priority === 'high').length;
+            const categories = [...new Set(ideas.map(i => i.category))];
+            
+            container.innerHTML = `
+                <div class="mobile-grid-2" style="margin-bottom: 16px;">
+                    <div style="text-align: center; padding: 16px; background: rgba(102, 126, 234, 0.2); border-radius: 16px;">
+                        <div style="font-size: 24px; font-weight: 700; color: #667eea;">${totalIdeas}</div>
+                        <div style="font-size: 12px; color: rgba(255, 255, 255, 0.8);">Gesamt</div>
+                    </div>
+                    <div style="text-align: center; padding: 16px; background: rgba(239, 68, 68, 0.2); border-radius: 16px;">
+                        <div style="font-size: 24px; font-weight: 700; color: #ef4444;">${highPriority}</div>
+                        <div style="font-size: 12px; color: rgba(255, 255, 255, 0.8);">Hoch</div>
+                    </div>
+                </div>
+                <div>
+                    <div style="font-size: 14px; font-weight: 600; color: rgba(255, 255, 255, 0.9); margin-bottom: 8px;">Kategorien:</div>
+                    <div style="display: flex; flex-wrap: wrap; gap: 6px;">
+                        ${categories.map(cat => `
+                            <span style="font-size: 11px; background: rgba(34, 197, 94, 0.3); color: #22c55e; padding: 4px 8px; border-radius: 8px;">${cat}</span>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        function addNewIdea() {
+            const content = document.getElementById('newIdeaContent').value;
+            const category = document.getElementById('newIdeaCategory').value;
+            const priority = document.getElementById('newIdeaPriority').value;
+            
+            if (!content.trim()) {
+                showMessage('❌ Bitte beschreibe deine Idee!');
+                return;
+            }
+            
+            const newIdea = {
+                id: Math.max(...ideas.map(i => i.id), 0) + 1,
+                content: content.trim(),
+                category: category,
+                priority: priority,
+                timestamp: Date.now()
+            };
+            
+            ideas.push(newIdea);
+            saveData();
+            
+            document.getElementById('newIdeaContent').value = '';
+            
+            renderIdeas();
+            showMessage('💡 Neue Idee hinzugefügt!');
+        }
+
+        function deleteIdea(ideaId) {
+            ideas = ideas.filter(i => i.id !== ideaId);
+            saveData();
+            renderIdeas();
+            showMessage('🗑️ Idee gelöscht!');
+        }
+
+        function editIdeaContent(ideaId, element) {
+            const idea = ideas.find(i => i.id === ideaId);
+            if (!idea) return;
+            
+            element.classList.add('editing');
+            const currentText = element.textContent;
+            
+            const textarea = document.createElement('textarea');
+            textarea.value = currentText;
+            textarea.style.fontSize = getComputedStyle(element).fontSize;
+            textarea.style.height = 'auto';
+            textarea.rows = 3;
+            
+            element.innerHTML = '';
+            element.appendChild(textarea);
+            textarea.focus();
+            textarea.select();
+            
+            textarea.style.height = textarea.scrollHeight + 'px';
+            
+            textarea.onblur = textarea.onkeydown = function(e) {
+                if (e.type === 'keydown' && e.key !== 'Enter') return;
+                if (e.type === 'keydown' && e.shiftKey) return;
+                const newValue = textarea.value || currentText;
+                idea.content = newValue;
+                element.textContent = newValue;
+                element.classList.remove('editing');
+                saveData();
+            };
+        }
+
+        // Navigation
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            
+            document.querySelectorAll('.nav-item').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            document.getElementById(pageId + 'Page').classList.add('active');
+            
+            event.target.closest('.nav-item').classList.add('active');
+            
+            if (pageId === 'overview') {
+                renderCurrentChallengeWidget();
+                renderTodayHabits();
+                renderGoalsOverview();
+            } else if (pageId === 'habits') {
+                renderAllHabits();
+            } else if (pageId === 'goals') {
+                renderGoalsPage();
+            } else if (pageId === 'challenges') {
+                renderChallenges();
+            } else if (pageId === 'brainstorm') {
+                renderIdeas();
+            }
+        }
+
+        // Motivation Functions
+        function getNewQuote() {
+            const randomQuote = motivationalQuotes[Math.floor(Math.random() * motivationalQuotes.length)];
+            document.getElementById('motivationTitle').textContent = randomQuote.title;
+            document.getElementById('motivationText').textContent = randomQuote.text;
+            document.getElementById('motivationAuthor').textContent = '— ' + randomQuote.author;
+            showMessage('💡 Neue Motivation geladen!');
+        }
+
+        // Stats Update
+        function updateStats() {
+            let currentStreak = 0;
+            for (let i = 6; i >= 0; i--) {
+                const todayCompleted = habits.filter(h => h.streak[i]).length;
+                if (todayCompleted >= Math.ceil(habits.length * 0.7)) {
+                    currentStreak++;
+                } else {
+                    break;
+                }
+            }
+            
+            const totalPossible = habits.length * 7;
+            const totalCompleted = habits.reduce((sum, habit) => 
+                sum + habit.streak.reduce((daySum, day) => daySum + day, 0), 0);
+            const completionRate = Math.round((totalCompleted / totalPossible) * 100);
+            
+            const todayCompleted = habits.filter(h => h.streak[6]).length;
+            
+            document.getElementById('habitStreak').textContent = currentStreak;
+            document.getElementById('completionRate').textContent = completionRate + '%';
+            document.getElementById('todayTasks').textContent = `${todayCompleted}/${habits.length}`;
+        }
+
+        // Utility Functions
+        function showMessage(message) {
+            const existing = document.querySelector('.success-message');
+            if (existing) {
+                existing.remove();
+            }
+
+            const messageEl = document.createElement('div');
+            messageEl.className = 'success-message';
+            messageEl.textContent = message;
+            document.body.appendChild(messageEl);
+
+            setTimeout(() => {
+                messageEl.remove();
+            }, 2500);
+        }
+
+        // Touch and Gesture Support
+        let touchStartY = 0;
+        let touchStartX = 0;
+
+        document.addEventListener('touchstart', function(e) {
+            touchStartY = e.touches[0].clientY;
+            touchStartX = e.touches[0].clientX;
+        }, { passive: true });
+
+        document.addEventListener('touchmove', function(e) {
+            // Prevent pull-to-refresh on iOS
+            if (window.scrollY === 0 && e.touches[0].clientY > touchStartY) {
+                e.preventDefault();
+            }
+        }, { passive: false });
+
+        // Prevent zoom on double tap
+        let lastTouchEnd = 0;
+        document.addEventListener('touchend', function (event) {
+            const now = (new Date()).getTime();
+            if (now - lastTouchEnd <= 300) {
+                event.preventDefault();
+            }
+            lastTouchEnd = now;
+        }, false);
+
+        // Initialize app
+        function init() {
+            const now = new Date();
+            document.getElementById('currentDate').textContent = 
+                now.toLocaleDateString('de-DE', { 
+                    weekday: 'long', 
+                    day: 'numeric',
+                    month: 'long'
+                });
+            
+            renderCurrentChallengeWidget();
+            renderTodayHabits();
+            renderGoalsOverview();
+            renderIdeas();
+            updateStats();
+
+            // Set viewport height for mobile browsers
+            const setVH = () => {
+                const vh = window.innerHeight * 0.01;
+                document.documentElement.style.setProperty('--vh', `${vh}px`);
+            };
+            
+            setVH();
+            window.addEventListener('resize', setVH);
+            window.addEventListener('orientationchange', setVH);
+        }
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', init);
+
+        // Auto-save on page unload
+        window.addEventListener('beforeunload', saveData);
+
+        // Add haptic feedback for iOS (if supported)
+        function hapticFeedback(type = 'impact') {
+            if (window.navigator && window.navigator.vibrate) {
+                switch(type) {
+                    case 'success':
+                        window.navigator.vibrate([50, 30, 50]);
+                        break;
+                    case 'error':
+                        window.navigator.vibrate([100, 50, 100, 50, 100]);
+                        break;
+                    default:
+                        window.navigator.vibrate(50);
+                }
+            }
+        }
+
+        // Service Worker for PWA functionality (optional)
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                // Register service worker if needed
+            });
+        }
+    </script>
+</body>
+</html>
