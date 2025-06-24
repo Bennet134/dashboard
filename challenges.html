@@ -1,0 +1,1425 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Challenges - Entrepreneur Hub">
+    <title>Challenges - Entrepreneur Hub</title>
+    <style>
+        :root {
+            --safe-top: env(safe-area-inset-top, 47px);
+            --safe-bottom: env(safe-area-inset-bottom, 34px);
+            --bg-primary: #0a0a0a;
+            --bg-glass: rgba(255, 255, 255, 0.06);
+            --border-primary: rgba(255, 255, 255, 0.08);
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.68);
+            --text-tertiary: rgba(255, 255, 255, 0.45);
+            --accent-blue: #007aff;
+            --accent-green: #34c759;
+            --accent-orange: #ff9500;
+            --accent-red: #ff3b30;
+            --accent-purple: #af52de;
+            --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --gradient-fire: linear-gradient(135deg, #ff9500 0%, #ff3b30 100%);
+            --shadow-medium: 0 4px 16px rgba(0, 0, 0, 0.25);
+            --blur-medium: blur(20px);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+
+        html {
+            height: 100%;
+            overflow-x: hidden;
+            -webkit-text-size-adjust: 100%;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', system-ui, sans-serif;
+            background: var(--bg-primary);
+            background-image: 
+                radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.15) 0%, transparent 50%);
+            background-attachment: fixed;
+            min-height: 100vh;
+            color: var(--text-primary);
+            overflow-x: hidden;
+            overscroll-behavior: none;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: -200px;
+            left: 0;
+            right: 0;
+            height: 200px;
+            background: var(--bg-primary);
+            z-index: -1;
+        }
+
+        .app-container {
+            max-width: 428px;
+            margin: 0 auto;
+            padding: var(--safe-top) 20px 0 20px;
+            padding-bottom: calc(100px + var(--safe-bottom));
+            min-height: 100vh;
+        }
+
+        .page-header {
+            background: var(--bg-glass);
+            backdrop-filter: var(--blur-medium);
+            border: 1px solid var(--border-primary);
+            border-radius: 24px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow-medium);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .page-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            animation: shimmer 3s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        .page-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+            background: var(--gradient-fire);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .page-subtitle {
+            font-size: 16px;
+            color: var(--text-secondary);
+            line-height: 1.4;
+        }
+
+        .quick-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid var(--border-primary);
+        }
+
+        .quick-stat {
+            text-align: center;
+            padding: 8px;
+        }
+
+        .quick-stat-value {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--accent-orange);
+            margin-bottom: 2px;
+        }
+
+        .quick-stat-label {
+            font-size: 10px;
+            color: var(--text-tertiary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+        }
+
+        .card {
+            background: var(--bg-glass);
+            backdrop-filter: var(--blur-medium);
+            border: 1px solid var(--border-primary);
+            border-radius: 24px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow-medium);
+            transition: all 0.4s cubic-bezier(0.4, 0.0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--gradient-fire);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .card-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            line-height: 1.2;
+        }
+
+        .form-container {
+            background: rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            border-radius: 20px;
+            padding: 24px;
+            margin-bottom: 20px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+            letter-spacing: -0.01em;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 18px 16px;
+            background: rgba(255, 255, 255, 0.06);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border-primary);
+            border-radius: 14px;
+            color: var(--text-primary);
+            font-size: 17px;
+            font-weight: 500;
+            transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+            -webkit-appearance: none;
+        }
+
+        .form-input::placeholder {
+            color: var(--text-tertiary);
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--accent-orange);
+            box-shadow: 0 0 0 4px rgba(255, 149, 0, 0.1);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .btn {
+            background: var(--gradient-fire);
+            border: none;
+            border-radius: 16px;
+            padding: 18px 24px;
+            color: white;
+            font-size: 17px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+            width: 100%;
+            margin: 12px 0;
+            min-height: 56px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn:active {
+            transform: scale(0.96);
+            box-shadow: var(--shadow-medium);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.08);
+            color: var(--text-primary);
+            border: 1px solid var(--border-primary);
+        }
+
+        .btn-danger {
+            background: var(--accent-red);
+            padding: 8px 10px;
+            font-size: 12px;
+            width: auto;
+            margin: 0;
+            min-height: auto;
+            border-radius: 8px;
+            border: none;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .challenge-item {
+            background: rgba(255, 255, 255, 0.04);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            border-radius: 18px;
+            padding: 20px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .challenge-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            width: 3px;
+            background: var(--gradient-fire);
+            transform: scaleY(0);
+            transition: transform 0.3s ease;
+        }
+
+        .challenge-item:active {
+            transform: scale(0.98);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .challenge-item:active::before {
+            transform: scaleY(1);
+        }
+
+        .challenge-item.completed {
+            border-color: var(--accent-green);
+            box-shadow: 0 0 0 1px rgba(52, 199, 89, 0.2);
+        }
+
+        .challenge-item.expired {
+            opacity: 0.6;
+            border-color: var(--text-tertiary);
+        }
+
+        .challenge-icon {
+            font-size: 26px;
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 149, 0, 0.1);
+            border-radius: 14px;
+            flex-shrink: 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 149, 0, 0.2);
+        }
+
+        .challenge-icon:active {
+            transform: scale(0.9);
+            background: rgba(255, 149, 0, 0.15);
+        }
+
+        .challenge-main {
+            flex: 1;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .challenge-text-section {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .challenge-info-section {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+        }
+
+        .challenge-title {
+            font-size: 17px;
+            font-weight: 600;
+            color: var(--text-primary);
+            line-height: 1.3;
+            cursor: pointer;
+            overflow-wrap: break-word;
+            word-break: break-word;
+            hyphens: auto;
+            margin: 0;
+        }
+
+        .challenge-description {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.3;
+            cursor: pointer;
+            overflow-wrap: break-word;
+            word-break: break-word;
+            hyphens: auto;
+            margin: 0;
+        }
+
+        .challenge-meta {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .challenge-duration {
+            font-size: 12px;
+            color: var(--accent-orange);
+            font-weight: 600;
+            background: rgba(255, 149, 0, 0.1);
+            padding: 4px 8px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 149, 0, 0.2);
+        }
+
+        .challenge-progress {
+            font-size: 12px;
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+
+        .challenge-deadline {
+            font-size: 12px;
+            color: var(--accent-red);
+            font-weight: 600;
+        }
+
+        .challenge-deadline.soon {
+            color: var(--accent-orange);
+            animation: pulse 2s infinite;
+        }
+
+        .challenge-deadline.far {
+            color: var(--text-tertiary);
+        }
+
+        .challenge-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+
+        .challenge-complete-btn {
+            background: var(--accent-green);
+            border: none;
+            border-radius: 8px;
+            padding: 8px 12px;
+            color: white;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .challenge-complete-btn:active {
+            transform: scale(0.95);
+        }
+
+        .challenge-complete-btn.completed {
+            background: var(--text-tertiary);
+            pointer-events: none;
+        }
+
+        .category-header {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text-secondary);
+            margin: 24px 0 12px 0;
+            padding-left: 8px;
+            border-left: 3px solid var(--accent-orange);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .category-stats {
+            font-size: 12px;
+            color: var(--text-tertiary);
+            font-weight: 500;
+        }
+
+        .empty {
+            text-align: center;
+            padding: 48px 24px;
+            color: var(--text-secondary);
+            background: rgba(255, 255, 255, 0.02);
+            border: 2px dashed rgba(255, 255, 255, 0.04);
+            border-radius: 20px;
+        }
+
+        .empty-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+            opacity: 0.7;
+        }
+
+        .empty-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: var(--text-primary);
+        }
+
+        .empty-subtitle {
+            font-size: 15px;
+            color: var(--text-tertiary);
+            line-height: 1.4;
+        }
+
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(28, 28, 30, 0.95);
+            backdrop-filter: blur(40px);
+            border-top: 1px solid var(--border-primary);
+            padding: 8px 20px calc(8px + var(--safe-bottom)) 20px;
+            z-index: 1000;
+        }
+
+        .nav-container {
+            max-width: 428px;
+            margin: 0 auto;
+        }
+
+        .nav-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 4px;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 8px 4px;
+            border-radius: 14px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+            color: var(--text-tertiary);
+            position: relative;
+            text-decoration: none;
+        }
+
+        .nav-item.active {
+            color: var(--accent-orange);
+            transform: scale(1.05);
+        }
+
+        .nav-item.active::before {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 24px;
+            height: 2px;
+            background: var(--accent-orange);
+            border-radius: 1px;
+        }
+
+        .nav-item:active {
+            transform: scale(0.9);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .nav-icon {
+            font-size: 22px;
+            margin-bottom: 4px;
+            line-height: 1;
+        }
+
+        .nav-label {
+            font-size: 10px;
+            font-weight: 600;
+            line-height: 1;
+        }
+
+        .editable {
+            cursor: pointer;
+            border-radius: 8px;
+            padding: 4px 6px;
+            margin: -4px -6px;
+            transition: all 0.2s ease;
+        }
+
+        .editable:active {
+            background: rgba(255, 149, 0, 0.1);
+        }
+
+        .editable.editing {
+            background: rgba(255, 149, 0, 0.15);
+        }
+
+        .editable input {
+            background: transparent;
+            border: none;
+            outline: none;
+            font: inherit;
+            color: inherit;
+            width: 100%;
+        }
+
+        .toast {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(28, 28, 30, 0.95);
+            backdrop-filter: blur(40px);
+            border: 1px solid var(--border-primary);
+            color: var(--text-primary);
+            padding: 20px 28px;
+            border-radius: 16px;
+            font-size: 16px;
+            font-weight: 600;
+            z-index: 2000;
+            animation: toastAnimation 3s ease forwards;
+            box-shadow: var(--shadow-medium);
+            max-width: 320px;
+            text-align: center;
+            line-height: 1.3;
+        }
+
+        @keyframes toastAnimation {
+            0% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
+            10% { opacity: 1; transform: translate(-50%, -50%) scale(1.05); }
+            90% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+            100% { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        @media (max-width: 430px) {
+            .challenge-item {
+                padding: 16px;
+                gap: 12px;
+            }
+
+            .challenge-main {
+                gap: 14px;
+            }
+
+            .challenge-info-section {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 14px;
+            }
+
+            .challenge-meta {
+                justify-content: center;
+            }
+
+            .challenge-actions {
+                align-self: center;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+        }
+
+        @media (max-width: 390px) {
+            .app-container {
+                padding-left: 12px;
+                padding-right: 12px;
+            }
+            
+            .challenge-item {
+                padding: 14px;
+                gap: 10px;
+            }
+
+            .challenge-icon {
+                width: 42px;
+                height: 42px;
+                font-size: 22px;
+            }
+            
+            .card {
+                padding: 18px;
+            }
+
+            .challenge-title {
+                font-size: 16px;
+            }
+
+            .challenge-description {
+                font-size: 13px;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .challenge-item {
+                padding: 12px;
+                gap: 8px;
+            }
+
+            .challenge-icon {
+                width: 38px;
+                height: 38px;
+                font-size: 20px;
+            }
+
+            .challenge-title {
+                font-size: 15px;
+            }
+
+            .challenge-description {
+                font-size: 12px;
+            }
+
+            .page-title {
+                font-size: 24px;
+            }
+
+            .card-title {
+                font-size: 18px;
+            }
+        }
+
+        body {
+            overscroll-behavior-y: none;
+        }
+
+        ::-webkit-scrollbar {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Page Header -->
+        <header class="page-header">
+            <h1 class="page-title">🔥 Challenges</h1>
+            <p class="page-subtitle">Setze dir Herausforderungen und erreiche deine größten Ziele</p>
+            
+            <div class="quick-stats">
+                <div class="quick-stat">
+                    <div class="quick-stat-value" id="totalChallenges">0</div>
+                    <div class="quick-stat-label">Challenges</div>
+                </div>
+                <div class="quick-stat">
+                    <div class="quick-stat-value" id="activeChallenges">0</div>
+                    <div class="quick-stat-label">Aktiv</div>
+                </div>
+                <div class="quick-stat">
+                    <div class="quick-stat-value" id="completedChallenges">0</div>
+                    <div class="quick-stat-label">Erledigt</div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Add New Challenge Form -->
+        <section class="card">
+            <h2 class="card-title">⚡ Neue Challenge erstellen</h2>
+            
+            <div class="form-container">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Icon</label>
+                        <input class="form-input" type="text" id="newChallengeIcon" placeholder="🚀" maxlength="2">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Dauer (Tage)</label>
+                        <input class="form-input" type="number" id="newChallengeDuration" placeholder="30" min="1" max="365">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Challenge Name</label>
+                    <input class="form-input" type="text" id="newChallengeName" placeholder="z.B. 30-Tage Fitness Challenge">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Beschreibung</label>
+                    <input class="form-input" type="text" id="newChallengeDescription" placeholder="z.B. Jeden Tag 30 Minuten Sport">
+                </div>
+                <button class="btn" onclick="addNewChallenge()">
+                    Challenge starten
+                </button>
+            </div>
+        </section>
+
+        <!-- Challenges List -->
+        <section class="card">
+            <h2 class="card-title">🎯 Meine Challenges</h2>
+            <div id="challengesContainer">
+                <div class="empty">
+                    <div class="empty-icon">🔥</div>
+                    <div class="empty-title">Noch keine Challenges</div>
+                    <p class="empty-subtitle">Erstelle deine erste Challenge und starte deine Transformation!</p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+        <div class="nav-container">
+            <div class="nav-grid">
+                <a href="index.html" class="nav-item">
+                    <div class="nav-icon">🏠</div>
+                    <div class="nav-label">Home</div>
+                </a>
+                <a href="habits.html" class="nav-item">
+                    <div class="nav-icon">🔄</div>
+                    <div class="nav-label">Habits</div>
+                </a>
+                <a href="challenges.html" class="nav-item active">
+                    <div class="nav-icon">🔥</div>
+                    <div class="nav-label">Challenges</div>
+                </a>
+                <a href="goals.html" class="nav-item">
+                    <div class="nav-icon">🎯</div>
+                    <div class="nav-label">Goals</div>
+                </a>
+                <a href="ideas.html" class="nav-item">
+                    <div class="nav-icon">💡</div>
+                    <div class="nav-label">Ideas</div>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <script>
+        // Shared Storage Keys
+        const STORAGE_KEYS = {
+            habits: 'entrepreneurDashboard_habits',
+            goals: 'entrepreneurDashboard_goals',
+            challenges: 'entrepreneurDashboard_challenges',
+            ideas: 'entrepreneurDashboard_ideas',
+            settings: 'entrepreneurDashboard_settings'
+        };
+
+        // Get current date (real dynamic date)
+        function getCurrentDate() {
+            return new Date(); // Uses the real current date
+        }
+
+        // Get current timestamp (for consistency)
+        function getCurrentTimestamp() {
+            return getCurrentDate().getTime();
+        }
+
+        // Load challenges from localStorage
+        function loadChallenges() {
+            try {
+                const data = localStorage.getItem(STORAGE_KEYS.challenges);
+                return data ? JSON.parse(data) : [];
+            } catch (e) {
+                console.error('Error loading challenges:', e);
+                return [];
+            }
+        }
+
+        // Save challenges to localStorage
+        function saveChallenges(challenges) {
+            try {
+                localStorage.setItem(STORAGE_KEYS.challenges, JSON.stringify(challenges));
+                
+                // Trigger storage event for other pages
+                window.dispatchEvent(new StorageEvent('storage', {
+                    key: STORAGE_KEYS.challenges,
+                    newValue: JSON.stringify(challenges)
+                }));
+                
+                // Update stats immediately
+                updateQuickStats();
+            } catch (e) {
+                console.error('Error saving challenges:', e);
+                showMessage('❌ Fehler beim Speichern!');
+            }
+        }
+
+        // Generate unique ID
+        function generateId(array) {
+            return Math.max(...array.map(item => item.id), 0) + 1;
+        }
+
+        // Show toast message
+        function showMessage(message) {
+            const existing = document.querySelector('.toast');
+            if (existing) existing.remove();
+
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.textContent = message;
+            document.body.appendChild(toast);
+
+            // Haptic feedback for iPhone
+            if (navigator.vibrate) {
+                if (message.includes('✅') || message.includes('🎉')) {
+                    navigator.vibrate([50, 30, 50]);
+                } else if (message.includes('❌') || message.includes('🗑️')) {
+                    navigator.vibrate([100, 50, 100]);
+                } else {
+                    navigator.vibrate(30);
+                }
+            }
+
+            setTimeout(() => toast.remove(), 3000);
+        }
+
+        // Calculate challenge stats
+        function calculateChallengeStats() {
+            const challenges = loadChallenges();
+            
+            if (challenges.length === 0) {
+                return {
+                    totalChallenges: 0,
+                    activeChallenges: 0,
+                    completedChallenges: 0
+                };
+            }
+
+            const now = getCurrentTimestamp();
+            let activeChallenges = 0;
+            let completedChallenges = 0;
+
+            challenges.forEach(challenge => {
+                if (challenge.completed) {
+                    completedChallenges++;
+                } else {
+                    const endDate = challenge.startDate + (challenge.duration * 24 * 60 * 60 * 1000);
+                    if (now <= endDate) {
+                        activeChallenges++;
+                    }
+                }
+            });
+
+            return {
+                totalChallenges: challenges.length,
+                activeChallenges: activeChallenges,
+                completedChallenges: completedChallenges
+            };
+        }
+
+        // Update quick stats in header
+        function updateQuickStats() {
+            const stats = calculateChallengeStats();
+            
+            document.getElementById('totalChallenges').textContent = stats.totalChallenges;
+            document.getElementById('activeChallenges').textContent = stats.activeChallenges;
+            document.getElementById('completedChallenges').textContent = stats.completedChallenges;
+        }
+
+        // Add new challenge
+        function addNewChallenge() {
+            const icon = document.getElementById('newChallengeIcon').value.trim() || '🚀';
+            const name = document.getElementById('newChallengeName').value.trim();
+            const description = document.getElementById('newChallengeDescription').value.trim();
+            const duration = parseInt(document.getElementById('newChallengeDuration').value) || 30;
+            
+            if (!name) {
+                showMessage('❌ Bitte gib einen Challenge-Namen ein!');
+                return;
+            }
+            
+            const challenges = loadChallenges();
+            const newChallenge = {
+                id: generateId(challenges),
+                icon: icon,
+                name: name,
+                description: description || 'Neue Challenge',
+                duration: duration,
+                startDate: getCurrentTimestamp(),
+                completed: false,
+                completedDate: null,
+                createdAt: getCurrentTimestamp()
+            };
+            
+            challenges.push(newChallenge);
+            saveChallenges(challenges);
+            
+            // Clear form
+            document.getElementById('newChallengeIcon').value = '';
+            document.getElementById('newChallengeName').value = '';
+            document.getElementById('newChallengeDescription').value = '';
+            document.getElementById('newChallengeDuration').value = '';
+            
+            renderChallenges();
+            showMessage('🔥 Neue Challenge erfolgreich gestartet!');
+        }
+
+        // Delete challenge
+        function deleteChallenge(challengeId) {
+            if (confirm('Challenge wirklich löschen?')) {
+                const challenges = loadChallenges();
+                const updatedChallenges = challenges.filter(c => c.id !== challengeId);
+                saveChallenges(updatedChallenges);
+                renderChallenges();
+                showMessage('🗑️ Challenge gelöscht');
+            }
+        }
+
+        // Complete challenge
+        function completeChallenge(challengeId) {
+            const challenges = loadChallenges();
+            const challenge = challenges.find(c => c.id === challengeId);
+            if (!challenge || challenge.completed) return;
+            
+            challenge.completed = true;
+            challenge.completedDate = getCurrentTimestamp();
+            saveChallenges(challenges);
+            renderChallenges();
+            showMessage('🎉 Challenge erfolgreich abgeschlossen!');
+        }
+
+        // Edit challenge field
+        function editChallengeField(challengeId, field, element) {
+            const challenges = loadChallenges();
+            const challenge = challenges.find(c => c.id === challengeId);
+            if (!challenge) return;
+            
+            element.classList.add('editing');
+            const currentText = element.textContent.trim();
+            
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.value = currentText;
+            input.style.fontSize = getComputedStyle(element).fontSize;
+            input.style.fontWeight = getComputedStyle(element).fontWeight;
+            input.style.background = 'rgba(255, 149, 0, 0.1)';
+            input.style.border = '2px solid var(--accent-orange)';
+            input.style.borderRadius = '8px';
+            input.style.padding = '6px';
+            
+            element.innerHTML = '';
+            element.appendChild(input);
+            input.focus();
+            input.select();
+            
+            const finish = () => {
+                const newValue = input.value.trim() || currentText;
+                challenge[field] = newValue;
+                element.textContent = newValue;
+                element.classList.remove('editing');
+                saveChallenges(challenges);
+                renderChallenges(); // Re-render to update display
+            };
+            
+            input.onblur = finish;
+            input.onkeydown = (e) => {
+                if (e.key === 'Enter') finish();
+                if (e.key === 'Escape') {
+                    element.textContent = currentText;
+                    element.classList.remove('editing');
+                }
+            };
+        }
+
+        // Calculate days remaining
+        function getDaysRemaining(challenge) {
+            if (challenge.completed) return 0;
+            
+            const now = getCurrentTimestamp();
+            const endDate = challenge.startDate + (challenge.duration * 24 * 60 * 60 * 1000);
+            const remaining = Math.ceil((endDate - now) / (24 * 60 * 60 * 1000));
+            
+            return Math.max(0, remaining);
+        }
+
+        // Calculate progress percentage
+        function getProgressPercentage(challenge) {
+            if (challenge.completed) return 100;
+            
+            const now = getCurrentTimestamp();
+            const elapsed = now - challenge.startDate;
+            const total = challenge.duration * 24 * 60 * 60 * 1000;
+            const progress = Math.min(100, Math.max(0, (elapsed / total) * 100));
+            
+            return Math.round(progress);
+        }
+
+        // Format date
+        function formatDate(timestamp) {
+            const date = new Date(timestamp);
+            return date.toLocaleDateString('de-DE', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric'
+            });
+        }
+
+        // Get deadline status
+        function getDeadlineStatus(daysRemaining) {
+            if (daysRemaining === 0) return 'expired';
+            if (daysRemaining <= 3) return 'soon';
+            if (daysRemaining <= 7) return 'normal';
+            return 'far';
+        }
+
+        // Render all challenges
+        function renderChallenges() {
+            const challenges = loadChallenges();
+            const container = document.getElementById('challengesContainer');
+            
+            if (challenges.length === 0) {
+                container.innerHTML = `
+                    <div class="empty">
+                        <div class="empty-icon">🔥</div>
+                        <div class="empty-title">Noch keine Challenges</div>
+                        <p class="empty-subtitle">Erstelle deine erste Challenge und starte deine Transformation!</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = '';
+            
+            // Sort challenges: active first, then completed, then expired
+            const sortedChallenges = [...challenges].sort((a, b) => {
+                if (a.completed && !b.completed) return 1;
+                if (!a.completed && b.completed) return -1;
+                if (a.completed && b.completed) return b.completedDate - a.completedDate;
+                
+                const aDaysRemaining = getDaysRemaining(a);
+                const bDaysRemaining = getDaysRemaining(b);
+                
+                if (aDaysRemaining === 0 && bDaysRemaining > 0) return 1;
+                if (aDaysRemaining > 0 && bDaysRemaining === 0) return -1;
+                
+                return b.startDate - a.startDate;
+            });
+
+            // Group challenges by status
+            const activeChallenges = sortedChallenges.filter(c => !c.completed && getDaysRemaining(c) > 0);
+            const completedChallenges = sortedChallenges.filter(c => c.completed);
+            const expiredChallenges = sortedChallenges.filter(c => !c.completed && getDaysRemaining(c) === 0);
+
+            // Render active challenges
+            if (activeChallenges.length > 0) {
+                const categoryHeader = document.createElement('div');
+                categoryHeader.className = 'category-header';
+                categoryHeader.innerHTML = `
+                    <span>🔥 Aktive Challenges</span>
+                    <span class="category-stats">${activeChallenges.length} laufend</span>
+                `;
+                container.appendChild(categoryHeader);
+
+                activeChallenges.forEach(challenge => {
+                    container.appendChild(createChallengeElement(challenge));
+                });
+            }
+
+            // Render completed challenges
+            if (completedChallenges.length > 0) {
+                const categoryHeader = document.createElement('div');
+                categoryHeader.className = 'category-header';
+                categoryHeader.innerHTML = `
+                    <span>✅ Abgeschlossene Challenges</span>
+                    <span class="category-stats">${completedChallenges.length} erledigt</span>
+                `;
+                container.appendChild(categoryHeader);
+
+                completedChallenges.forEach(challenge => {
+                    container.appendChild(createChallengeElement(challenge));
+                });
+            }
+
+            // Render expired challenges
+            if (expiredChallenges.length > 0) {
+                const categoryHeader = document.createElement('div');
+                categoryHeader.className = 'category-header';
+                categoryHeader.innerHTML = `
+                    <span>⏰ Abgelaufene Challenges</span>
+                    <span class="category-stats">${expiredChallenges.length} abgelaufen</span>
+                `;
+                container.appendChild(categoryHeader);
+
+                expiredChallenges.forEach(challenge => {
+                    container.appendChild(createChallengeElement(challenge));
+                });
+            }
+        }
+
+        // Create challenge element
+        function createChallengeElement(challenge) {
+            const daysRemaining = getDaysRemaining(challenge);
+            const progress = getProgressPercentage(challenge);
+            const deadlineStatus = getDeadlineStatus(daysRemaining);
+            
+            const challengeElement = document.createElement('div');
+            let className = 'challenge-item';
+            if (challenge.completed) className += ' completed';
+            if (daysRemaining === 0 && !challenge.completed) className += ' expired';
+            
+            challengeElement.className = className;
+            
+            let deadlineText = '';
+            if (challenge.completed) {
+                deadlineText = `<div class="challenge-deadline">Abgeschlossen am ${formatDate(challenge.completedDate)}</div>`;
+            } else if (daysRemaining === 0) {
+                deadlineText = `<div class="challenge-deadline expired">Abgelaufen</div>`;
+            } else {
+                deadlineText = `<div class="challenge-deadline ${deadlineStatus}">Noch ${daysRemaining} Tag${daysRemaining !== 1 ? 'e' : ''}</div>`;
+            }
+            
+            challengeElement.innerHTML = `
+                <div class="challenge-icon editable" onclick="editChallengeField(${challenge.id}, 'icon', this)">${challenge.icon}</div>
+                <div class="challenge-main">
+                    <div class="challenge-text-section">
+                        <div class="challenge-title editable" onclick="editChallengeField(${challenge.id}, 'name', this)">${challenge.name}</div>
+                        <div class="challenge-description editable" onclick="editChallengeField(${challenge.id}, 'description', this)">${challenge.description}</div>
+                    </div>
+                    <div class="challenge-info-section">
+                        <div class="challenge-meta">
+                            <div class="challenge-duration">${challenge.duration} Tage</div>
+                            <div class="challenge-progress">${progress}% erledigt</div>
+                            ${deadlineText}
+                        </div>
+                        <div class="challenge-actions">
+                            ${!challenge.completed && daysRemaining > 0 ? 
+                                `<button class="challenge-complete-btn" onclick="completeChallenge(${challenge.id})">✅ Abschließen</button>` : 
+                                challenge.completed ? 
+                                `<button class="challenge-complete-btn completed">✅ Erledigt</button>` : 
+                                ''
+                            }
+                            <button class="btn-danger" onclick="deleteChallenge(${challenge.id})">🗑️</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            return challengeElement;
+        }
+
+        // Prevent overscroll and handle touch events for iPhone
+        let touchStartY = 0;
+        
+        document.addEventListener('touchstart', function(e) {
+            touchStartY = e.touches[0].clientY;
+        }, { passive: true });
+
+        document.addEventListener('touchmove', function(e) {
+            const currentY = e.touches[0].clientY;
+            const deltaY = currentY - touchStartY;
+            
+            // Prevent overscroll at the top
+            if (window.scrollY === 0 && deltaY > 0) {
+                e.preventDefault();
+            }
+            
+            // Prevent overscroll at the bottom
+            const scrollHeight = document.documentElement.scrollHeight;
+            const clientHeight = document.documentElement.clientHeight;
+            const scrollTop = window.scrollY;
+            
+            if (scrollTop + clientHeight >= scrollHeight - 5 && deltaY < 0) {
+                e.preventDefault();
+            }
+        }, { passive: false });
+
+        // Prevent zoom on double tap
+        let lastTouchEnd = 0;
+        document.addEventListener('touchend', function (event) {
+            const now = Date.now();
+            if (now - lastTouchEnd <= 300) {
+                event.preventDefault();
+            }
+            lastTouchEnd = now;
+        }, false);
+
+        // Prevent context menu
+        document.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+        }, false);
+
+        // Initialize page
+        function init() {
+            updateQuickStats();
+            renderChallenges();
+
+            // Set viewport height for mobile browsers
+            const setVH = () => {
+                const vh = window.innerHeight * 0.01;
+                document.documentElement.style.setProperty('--vh', `${vh}px`);
+                document.body.style.minHeight = `${window.innerHeight}px`;
+            };
+            
+            setVH();
+            window.addEventListener('resize', setVH);
+            window.addEventListener('orientationchange', () => {
+                setTimeout(setVH, 100);
+            });
+
+            console.log('🔥 Challenges page loaded successfully!');
+            console.log(`📅 Aktuelles Datum: ${formatDate(getCurrentTimestamp())} (dynamisch aktualisiert)`);
+        }
+
+        // Listen for storage changes from other pages
+        window.addEventListener('storage', function(e) {
+            if (e.key === STORAGE_KEYS.challenges) {
+                updateQuickStats();
+                renderChallenges();
+                console.log('🔥 Challenges data synchronized from other page');
+            }
+        });
+
+        // Refresh data when page becomes visible
+        document.addEventListener('visibilitychange', function() {
+            if (!document.hidden) {
+                updateQuickStats();
+                renderChallenges();
+            }
+        });
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', init);
+
+        // Auto-save functionality
+        window.addEventListener('beforeunload', function() {
+            // Data is already saved on each change, but this ensures cleanup
+        });
+
+        // Keyboard shortcuts for faster navigation
+        document.addEventListener('keydown', function(e) {
+            // Only handle shortcuts if not editing
+            if (document.querySelector('.editing')) return;
+            
+            switch(e.key) {
+                case 'n':
+                case 'N':
+                    if (e.altKey || e.metaKey) {
+                        e.preventDefault();
+                        document.getElementById('newChallengeName').focus();
+                    }
+                    break;
+                case 'Escape':
+                    // Clear form
+                    document.getElementById('newChallengeIcon').value = '';
+                    document.getElementById('newChallengeName').value = '';
+                    document.getElementById('newChallengeDescription').value = '';
+                    document.getElementById('newChallengeDuration').value = '';
+                    break;
+            }
+        });
+
+        // Performance monitoring
+        window.addEventListener('load', function() {
+            setTimeout(() => {
+                if (performance.getEntriesByType) {
+                    const perfData = performance.getEntriesByType('navigation')[0];
+                    if (perfData) {
+                        console.log(`⚡ Challenges page loaded in ${Math.round(perfData.loadEventEnd - perfData.fetchStart)}ms`);
+                    }
+                }
+            }, 0);
+        });
+
+        // Enhanced challenge analytics (for future use)
+        function getChallengeAnalytics() {
+            const challenges = loadChallenges();
+            
+            if (challenges.length === 0) {
+                return {
+                    totalChallenges: 0,
+                    activeChallenges: 0,
+                    completedChallenges: 0,
+                    averageDuration: 0,
+                    successRate: 0
+                };
+            }
+
+            const now = getCurrentTimestamp();
+            let activeChallenges = 0;
+            let completedChallenges = 0;
+            let totalDuration = 0;
+
+            challenges.forEach(challenge => {
+                totalDuration += challenge.duration;
+                
+                if (challenge.completed) {
+                    completedChallenges++;
+                } else {
+                    const endDate = challenge.startDate + (challenge.duration * 24 * 60 * 60 * 1000);
+                    if (now <= endDate) {
+                        activeChallenges++;
+                    }
+                }
+            });
+
+            const finishedChallenges = challenges.filter(c => {
+                const endDate = c.startDate + (c.duration * 24 * 60 * 60 * 1000);
+                return now > endDate || c.completed;
+            });
+
+            const successRate = finishedChallenges.length > 0 ? 
+                Math.round((completedChallenges / finishedChallenges.length) * 100) : 0;
+
+            return {
+                totalChallenges: challenges.length,
+                activeChallenges: activeChallenges,
+                completedChallenges: completedChallenges,
+                averageDuration: Math.round(totalDuration / challenges.length),
+                successRate: successRate
+            };
+        }
+
+        // Debug functions (accessible from console)
+        window.challengesDebug = {
+            getAnalytics: getChallengeAnalytics,
+            loadChallenges: loadChallenges,
+            saveChallenges: saveChallenges,
+            calculateStats: calculateChallengeStats,
+            getCurrentDate: () => formatDate(getCurrentTimestamp()),
+            getCurrentTimestamp: getCurrentTimestamp
+        };
+
+        console.log('🔧 Debug functions available: window.challengesDebug');
+    </script>
+</body>
+</html>

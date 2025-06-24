@@ -1,0 +1,1535 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Ideas - Entrepreneur Hub">
+    <title>Ideas - Entrepreneur Hub</title>
+    <style>
+        :root {
+            --safe-top: env(safe-area-inset-top, 47px);
+            --safe-bottom: env(safe-area-inset-bottom, 34px);
+            --bg-primary: #0a0a0a;
+            --bg-glass: rgba(255, 255, 255, 0.06);
+            --border-primary: rgba(255, 255, 255, 0.08);
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.68);
+            --text-tertiary: rgba(255, 255, 255, 0.45);
+            --accent-blue: #007aff;
+            --accent-green: #34c759;
+            --accent-orange: #ff9500;
+            --accent-red: #ff3b30;
+            --accent-purple: #af52de;
+            --accent-pink: #ff2d92;
+            --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --shadow-medium: 0 4px 16px rgba(0, 0, 0, 0.25);
+            --blur-medium: blur(20px);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+
+        html {
+            height: 100%;
+            overflow-x: hidden;
+            -webkit-text-size-adjust: 100%;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', system-ui, sans-serif;
+            background: var(--bg-primary);
+            background-image: 
+                radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.15) 0%, transparent 50%);
+            background-attachment: fixed;
+            min-height: 100vh;
+            color: var(--text-primary);
+            overflow-x: hidden;
+            overscroll-behavior: none;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: -200px;
+            left: 0;
+            right: 0;
+            height: 200px;
+            background: var(--bg-primary);
+            z-index: -1;
+        }
+
+        .app-container {
+            max-width: 428px;
+            margin: 0 auto;
+            padding: var(--safe-top) 20px 0 20px;
+            padding-bottom: calc(100px + var(--safe-bottom));
+            min-height: 100vh;
+        }
+
+        .page-header {
+            background: var(--bg-glass);
+            backdrop-filter: var(--blur-medium);
+            border: 1px solid var(--border-primary);
+            border-radius: 24px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow-medium);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .page-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            animation: shimmer 3s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        .page-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+            background: var(--gradient-primary);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .page-subtitle {
+            font-size: 16px;
+            color: var(--text-secondary);
+            line-height: 1.4;
+        }
+
+        .quick-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid var(--border-primary);
+        }
+
+        .quick-stat {
+            text-align: center;
+            padding: 8px;
+        }
+
+        .quick-stat-value {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--accent-blue);
+            margin-bottom: 2px;
+        }
+
+        .quick-stat-label {
+            font-size: 10px;
+            color: var(--text-tertiary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+        }
+
+        .card {
+            background: var(--bg-glass);
+            backdrop-filter: var(--blur-medium);
+            border: 1px solid var(--border-primary);
+            border-radius: 24px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow-medium);
+            transition: all 0.4s cubic-bezier(0.4, 0.0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--gradient-primary);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .card-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            line-height: 1.2;
+        }
+
+        .form-container {
+            background: rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            border-radius: 20px;
+            padding: 24px;
+            margin-bottom: 20px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+            letter-spacing: -0.01em;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 18px 16px;
+            background: rgba(255, 255, 255, 0.06);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border-primary);
+            border-radius: 14px;
+            color: var(--text-primary);
+            font-size: 17px;
+            font-weight: 500;
+            transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+            -webkit-appearance: none;
+        }
+
+        .form-textarea {
+            min-height: 120px;
+            resize: vertical;
+            font-family: inherit;
+        }
+
+        .form-input::placeholder {
+            color: var(--text-tertiary);
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 0 4px rgba(0, 122, 255, 0.1);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .btn {
+            background: var(--gradient-primary);
+            border: none;
+            border-radius: 16px;
+            padding: 18px 24px;
+            color: white;
+            font-size: 17px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+            width: 100%;
+            margin: 12px 0;
+            min-height: 56px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn:active {
+            transform: scale(0.96);
+            box-shadow: var(--shadow-medium);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.08);
+            color: var(--text-primary);
+            border: 1px solid var(--border-primary);
+        }
+
+        .btn-danger {
+            background: var(--accent-red);
+            padding: 8px 10px;
+            font-size: 12px;
+            width: auto;
+            margin: 0;
+            min-height: auto;
+            border-radius: 8px;
+            border: none;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .filter-container {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+            overflow-x: auto;
+            padding: 4px 0;
+        }
+
+        .filter-btn {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid var(--border-primary);
+            color: var(--text-secondary);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .filter-btn.active {
+            background: var(--accent-blue);
+            border-color: var(--accent-blue);
+            color: white;
+        }
+
+        .filter-btn:active {
+            transform: scale(0.95);
+        }
+
+        .idea-item {
+            background: rgba(255, 255, 255, 0.04);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            border-radius: 18px;
+            padding: 20px;
+            margin-bottom: 16px;
+            transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .idea-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            width: 3px;
+            background: var(--gradient-primary);
+            transform: scaleY(0);
+            transition: transform 0.3s ease;
+        }
+
+        .idea-item:active {
+            transform: scale(0.98);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .idea-item:active::before {
+            transform: scaleY(1);
+        }
+
+        .idea-item.favorite {
+            border-color: var(--accent-orange);
+            box-shadow: 0 0 0 1px rgba(255, 149, 0, 0.2);
+        }
+
+        .idea-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        .idea-icon {
+            font-size: 26px;
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.06);
+            border-radius: 14px;
+            flex-shrink: 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .idea-icon:active {
+            transform: scale(0.9);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .idea-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .idea-title {
+            font-size: 17px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+            line-height: 1.3;
+            word-wrap: break-word;
+            cursor: pointer;
+        }
+
+        .idea-description {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.4;
+            word-wrap: break-word;
+            margin-bottom: 12px;
+            cursor: pointer;
+        }
+
+        .idea-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .idea-tag {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-secondary);
+            padding: 4px 8px;
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .idea-tag.status-brainstorming {
+            background: rgba(175, 82, 222, 0.2);
+            color: var(--accent-purple);
+        }
+
+        .idea-tag.status-researching {
+            background: rgba(0, 122, 255, 0.2);
+            color: var(--accent-blue);
+        }
+
+        .idea-tag.status-prototyping {
+            background: rgba(255, 149, 0, 0.2);
+            color: var(--accent-orange);
+        }
+
+        .idea-tag.status-testing {
+            background: rgba(255, 45, 146, 0.2);
+            color: var(--accent-pink);
+        }
+
+        .idea-tag.status-developing {
+            background: rgba(52, 199, 89, 0.2);
+            color: var(--accent-green);
+        }
+
+        .idea-tag.status-paused {
+            background: rgba(255, 59, 48, 0.2);
+            color: var(--accent-red);
+        }
+
+        .idea-rating {
+            display: flex;
+            gap: 4px;
+            margin-bottom: 12px;
+        }
+
+        .star {
+            font-size: 16px;
+            color: var(--text-tertiary);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .star.filled {
+            color: var(--accent-orange);
+        }
+
+        .star:active {
+            transform: scale(1.2);
+        }
+
+        .idea-actions {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .favorite-btn {
+            background: rgba(255, 149, 0, 0.1);
+            border: 1px solid var(--accent-orange);
+            color: var(--accent-orange);
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .favorite-btn.active {
+            background: var(--accent-orange);
+            color: white;
+        }
+
+        .favorite-btn:active {
+            transform: scale(0.95);
+        }
+
+        .status-btn {
+            background: rgba(0, 122, 255, 0.1);
+            border: 1px solid var(--accent-blue);
+            color: var(--accent-blue);
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .status-btn:active {
+            transform: scale(0.95);
+            background: rgba(0, 122, 255, 0.2);
+        }
+
+        .category-header {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text-secondary);
+            margin: 24px 0 12px 0;
+            padding-left: 8px;
+            border-left: 3px solid var(--accent-blue);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .category-stats {
+            font-size: 12px;
+            color: var(--text-tertiary);
+            font-weight: 500;
+        }
+
+        .empty {
+            text-align: center;
+            padding: 48px 24px;
+            color: var(--text-secondary);
+            background: rgba(255, 255, 255, 0.02);
+            border: 2px dashed rgba(255, 255, 255, 0.04);
+            border-radius: 20px;
+        }
+
+        .empty-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+            opacity: 0.7;
+        }
+
+        .empty-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: var(--text-primary);
+        }
+
+        .empty-subtitle {
+            font-size: 15px;
+            color: var(--text-tertiary);
+            line-height: 1.4;
+        }
+
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(28, 28, 30, 0.95);
+            backdrop-filter: blur(40px);
+            border-top: 1px solid var(--border-primary);
+            padding: 8px 20px calc(8px + var(--safe-bottom)) 20px;
+            z-index: 1000;
+        }
+
+        .nav-container {
+            max-width: 428px;
+            margin: 0 auto;
+        }
+
+        .nav-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 4px;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 8px 4px;
+            border-radius: 14px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+            color: var(--text-tertiary);
+            position: relative;
+            text-decoration: none;
+        }
+
+        .nav-item.active {
+            color: var(--accent-blue);
+            transform: scale(1.05);
+        }
+
+        .nav-item.active::before {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 24px;
+            height: 2px;
+            background: var(--accent-blue);
+            border-radius: 1px;
+        }
+
+        .nav-item:active {
+            transform: scale(0.9);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .nav-icon {
+            font-size: 22px;
+            margin-bottom: 4px;
+            line-height: 1;
+        }
+
+        .nav-label {
+            font-size: 10px;
+            font-weight: 600;
+            line-height: 1;
+        }
+
+        .editable {
+            cursor: pointer;
+            border-radius: 8px;
+            padding: 4px 6px;
+            margin: -4px -6px;
+            transition: all 0.2s ease;
+        }
+
+        .editable:active {
+            background: rgba(0, 122, 255, 0.1);
+        }
+
+        .editable.editing {
+            background: rgba(0, 122, 255, 0.15);
+        }
+
+        .editable input, .editable textarea {
+            background: transparent;
+            border: none;
+            outline: none;
+            font: inherit;
+            color: inherit;
+            width: 100%;
+        }
+
+        .toast {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(28, 28, 30, 0.95);
+            backdrop-filter: blur(40px);
+            border: 1px solid var(--border-primary);
+            color: var(--text-primary);
+            padding: 20px 28px;
+            border-radius: 16px;
+            font-size: 16px;
+            font-weight: 600;
+            z-index: 2000;
+            animation: toastAnimation 3s ease forwards;
+            box-shadow: var(--shadow-medium);
+            max-width: 320px;
+            text-align: center;
+            line-height: 1.3;
+        }
+
+        @keyframes toastAnimation {
+            0% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
+            10% { opacity: 1; transform: translate(-50%, -50%) scale(1.05); }
+            90% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+            100% { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
+        }
+
+        @media (max-width: 430px) {
+            .app-container {
+                padding-left: 16px;
+                padding-right: 16px;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+        }
+
+        @media (max-width: 390px) {
+            .app-container {
+                padding-left: 12px;
+                padding-right: 12px;
+            }
+            
+            .idea-item {
+                padding: 16px;
+            }
+
+            .idea-icon {
+                width: 42px;
+                height: 42px;
+                font-size: 22px;
+            }
+            
+            .card {
+                padding: 18px;
+            }
+
+            .idea-title {
+                font-size: 16px;
+            }
+
+            .idea-description {
+                font-size: 13px;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .idea-item {
+                padding: 14px;
+            }
+
+            .idea-icon {
+                width: 38px;
+                height: 38px;
+                font-size: 20px;
+            }
+
+            .idea-title {
+                font-size: 15px;
+            }
+
+            .idea-description {
+                font-size: 12px;
+            }
+
+            .page-title {
+                font-size: 24px;
+            }
+
+            .card-title {
+                font-size: 18px;
+            }
+        }
+
+        body {
+            overscroll-behavior-y: none;
+        }
+
+        ::-webkit-scrollbar {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Page Header -->
+        <header class="page-header">
+            <h1 class="page-title">💡 Ideas Tracker</h1>
+            <p class="page-subtitle">Sammle, bewerte und entwickle deine Geschäftsideen</p>
+            
+            <div class="quick-stats">
+                <div class="quick-stat">
+                    <div class="quick-stat-value" id="totalIdeas">0</div>
+                    <div class="quick-stat-label">Ideas</div>
+                </div>
+                <div class="quick-stat">
+                    <div class="quick-stat-value" id="favoriteIdeas">0</div>
+                    <div class="quick-stat-label">Favoriten</div>
+                </div>
+                <div class="quick-stat">
+                    <div class="quick-stat-value" id="avgRating">0.0</div>
+                    <div class="quick-stat-label">Ø Rating</div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Add New Idea Form -->
+        <section class="card">
+            <h2 class="card-title">➕ Neue Idee hinzufügen</h2>
+            
+            <div class="form-container">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Icon</label>
+                        <input class="form-input" type="text" id="newIdeaIcon" placeholder="💡" maxlength="2">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Kategorie</label>
+                        <select class="form-input" id="newIdeaCategory">
+                            <option value="saas">💻 SaaS</option>
+                            <option value="app">📱 App</option>
+                            <option value="ecommerce">🛒 E-Commerce</option>
+                            <option value="content">📝 Content</option>
+                            <option value="service">⚙️ Service</option>
+                            <option value="product">📦 Produkt</option>
+                            <option value="consulting">💼 Consulting</option>
+                            <option value="automation">🤖 Automation</option>
+                            <option value="other">🔮 Sonstige</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Idee Titel</label>
+                    <input class="form-input" type="text" id="newIdeaTitle" placeholder="z.B. AI-basierter Social Media Scheduler">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Beschreibung</label>
+                    <textarea class="form-input form-textarea" id="newIdeaDescription" placeholder="Beschreibe deine Idee im Detail: Problem, Lösung, Zielgruppe, Business Model..."></textarea>
+                </div>
+                <button class="btn" onclick="addNewIdea()">
+                    Idee hinzufügen
+                </button>
+            </div>
+        </section>
+
+        <!-- Filter Options -->
+        <section class="card">
+            <h2 class="card-title">🔍 Filter</h2>
+            <div class="filter-container" id="filterContainer">
+                <button class="filter-btn active" onclick="filterIdeas('all')">Alle</button>
+                <button class="filter-btn" onclick="filterIdeas('favorites')">⭐ Favoriten</button>
+                <button class="filter-btn" onclick="filterIdeas('brainstorming')">🧠 Brainstorming</button>
+                <button class="filter-btn" onclick="filterIdeas('researching')">🔍 Research</button>
+                <button class="filter-btn" onclick="filterIdeas('prototyping')">🛠️ Prototyping</button>
+                <button class="filter-btn" onclick="filterIdeas('developing')">🚀 Development</button>
+            </div>
+        </section>
+
+        <!-- Ideas List -->
+        <section class="card">
+            <h2 class="card-title">📋 Meine Ideas</h2>
+            <div id="ideasContainer">
+                <div class="empty">
+                    <div class="empty-icon">💡</div>
+                    <div class="empty-title">Noch keine Ideas</div>
+                    <p class="empty-subtitle">Erstelle deine erste Idee und beginne deine Entrepreneurship-Reise!</p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+        <div class="nav-container">
+            <div class="nav-grid">
+                <a href="index.html" class="nav-item">
+                    <div class="nav-icon">🏠</div>
+                    <div class="nav-label">Home</div>
+                </a>
+                <a href="habits.html" class="nav-item">
+                    <div class="nav-icon">🔄</div>
+                    <div class="nav-label">Habits</div>
+                </a>
+                <a href="challenges.html" class="nav-item">
+                    <div class="nav-icon">🔥</div>
+                    <div class="nav-label">Challenges</div>
+                </a>
+                <a href="goals.html" class="nav-item">
+                    <div class="nav-icon">🎯</div>
+                    <div class="nav-label">Goals</div>
+                </a>
+                <a href="ideas.html" class="nav-item active">
+                    <div class="nav-icon">💡</div>
+                    <div class="nav-label">Ideas</div>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <script>
+        // Shared Storage Keys
+        const STORAGE_KEYS = {
+            habits: 'entrepreneurDashboard_habits',
+            goals: 'entrepreneurDashboard_goals',
+            challenges: 'entrepreneurDashboard_challenges',
+            ideas: 'entrepreneurDashboard_ideas',
+            settings: 'entrepreneurDashboard_settings'
+        };
+
+        // Category names mapping
+        const categoryNames = {
+            saas: '💻 SaaS',
+            app: '📱 App',
+            ecommerce: '🛒 E-Commerce',
+            content: '📝 Content',
+            service: '⚙️ Service',
+            product: '📦 Produkt',
+            consulting: '💼 Consulting',
+            automation: '🤖 Automation',
+            other: '🔮 Sonstige'
+        };
+
+        // Status names mapping
+        const statusNames = {
+            brainstorming: '🧠 Brainstorming',
+            researching: '🔍 Research',
+            prototyping: '🛠️ Prototyping',
+            testing: '🧪 Testing',
+            developing: '🚀 Development',
+            paused: '⏸️ Pausiert'
+        };
+
+        // Current filter state
+        let currentFilter = 'all';
+
+        // Load ideas from localStorage
+        function loadIdeas() {
+            try {
+                const data = localStorage.getItem(STORAGE_KEYS.ideas);
+                return data ? JSON.parse(data) : [];
+            } catch (e) {
+                console.error('Error loading ideas:', e);
+                return [];
+            }
+        }
+
+        // Save ideas to localStorage
+        function saveIdeas(ideas) {
+            try {
+                localStorage.setItem(STORAGE_KEYS.ideas, JSON.stringify(ideas));
+                
+                // Trigger storage event for other pages
+                window.dispatchEvent(new StorageEvent('storage', {
+                    key: STORAGE_KEYS.ideas,
+                    newValue: JSON.stringify(ideas)
+                }));
+                
+                // Update stats immediately
+                updateQuickStats();
+            } catch (e) {
+                console.error('Error saving ideas:', e);
+                showMessage('❌ Fehler beim Speichern!');
+            }
+        }
+
+        // Generate unique ID
+        function generateId(array) {
+            return Math.max(...array.map(item => item.id), 0) + 1;
+        }
+
+        // Show toast message
+        function showMessage(message) {
+            const existing = document.querySelector('.toast');
+            if (existing) existing.remove();
+
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.textContent = message;
+            document.body.appendChild(toast);
+
+            // Haptic feedback for iPhone
+            if (navigator.vibrate) {
+                if (message.includes('✅') || message.includes('🎉')) {
+                    navigator.vibrate([50, 30, 50]);
+                } else if (message.includes('❌') || message.includes('🗑️')) {
+                    navigator.vibrate([100, 50, 100]);
+                } else {
+                    navigator.vibrate(30);
+                }
+            }
+
+            setTimeout(() => toast.remove(), 3000);
+        }
+
+        // Calculate idea analytics
+        function calculateIdeaStats() {
+            const ideas = loadIdeas();
+            
+            if (ideas.length === 0) {
+                return {
+                    totalIdeas: 0,
+                    favoriteIdeas: 0,
+                    avgRating: 0.0
+                };
+            }
+
+            const favoriteIdeas = ideas.filter(i => i.favorite).length;
+            const totalRating = ideas.reduce((sum, idea) => sum + (idea.rating || 0), 0);
+            const avgRating = ideas.length > 0 ? (totalRating / ideas.length).toFixed(1) : 0.0;
+
+            return {
+                totalIdeas: ideas.length,
+                favoriteIdeas: favoriteIdeas,
+                avgRating: avgRating
+            };
+        }
+
+        // Update quick stats in header
+        function updateQuickStats() {
+            const stats = calculateIdeaStats();
+            
+            document.getElementById('totalIdeas').textContent = stats.totalIdeas;
+            document.getElementById('favoriteIdeas').textContent = stats.favoriteIdeas;
+            document.getElementById('avgRating').textContent = stats.avgRating;
+        }
+
+        // Add new idea
+        function addNewIdea() {
+            const icon = document.getElementById('newIdeaIcon').value.trim() || '💡';
+            const title = document.getElementById('newIdeaTitle').value.trim();
+            const description = document.getElementById('newIdeaDescription').value.trim();
+            const category = document.getElementById('newIdeaCategory').value;
+            
+            if (!title) {
+                showMessage('❌ Bitte gib einen Idee-Titel ein!');
+                return;
+            }
+            
+            const ideas = loadIdeas();
+            const newIdea = {
+                id: generateId(ideas),
+                icon: icon,
+                title: title,
+                description: description || 'Neue Idee',
+                category: category,
+                status: 'brainstorming',
+                rating: 0,
+                favorite: false,
+                createdAt: Date.now(),
+                updatedAt: Date.now()
+            };
+            
+            ideas.push(newIdea);
+            saveIdeas(ideas);
+            
+            // Clear form
+            document.getElementById('newIdeaIcon').value = '';
+            document.getElementById('newIdeaTitle').value = '';
+            document.getElementById('newIdeaDescription').value = '';
+            
+            renderIdeas();
+            showMessage('🎉 Neue Idee erfolgreich hinzugefügt!');
+        }
+
+        // Delete idea
+        function deleteIdea(ideaId) {
+            if (confirm('Idee wirklich löschen?')) {
+                const ideas = loadIdeas();
+                const updatedIdeas = ideas.filter(i => i.id !== ideaId);
+                saveIdeas(updatedIdeas);
+                renderIdeas();
+                showMessage('🗑️ Idee gelöscht');
+            }
+        }
+
+        // Edit idea field
+        function editIdeaField(ideaId, field, element) {
+            const ideas = loadIdeas();
+            const idea = ideas.find(i => i.id === ideaId);
+            if (!idea) return;
+            
+            element.classList.add('editing');
+            const currentText = element.textContent.trim();
+            
+            const isTextarea = field === 'description';
+            const input = document.createElement(isTextarea ? 'textarea' : 'input');
+            input.type = 'text';
+            input.value = currentText;
+            input.style.fontSize = getComputedStyle(element).fontSize;
+            input.style.fontWeight = getComputedStyle(element).fontWeight;
+            input.style.background = 'rgba(0, 122, 255, 0.1)';
+            input.style.border = '2px solid var(--accent-blue)';
+            input.style.borderRadius = '8px';
+            input.style.padding = '6px';
+            
+            if (isTextarea) {
+                input.style.minHeight = '60px';
+                input.style.resize = 'vertical';
+            }
+            
+            element.innerHTML = '';
+            element.appendChild(input);
+            input.focus();
+            input.select();
+            
+            const finish = () => {
+                const newValue = input.value.trim() || currentText;
+                idea[field] = newValue;
+                idea.updatedAt = Date.now();
+                element.textContent = newValue;
+                element.classList.remove('editing');
+                saveIdeas(ideas);
+                renderIdeas();
+            };
+            
+            input.onblur = finish;
+            input.onkeydown = (e) => {
+                if (e.key === 'Enter' && !isTextarea) finish();
+                if (e.key === 'Escape') {
+                    element.textContent = currentText;
+                    element.classList.remove('editing');
+                }
+            };
+        }
+
+        // Toggle favorite status
+        function toggleFavorite(ideaId) {
+            const ideas = loadIdeas();
+            const idea = ideas.find(i => i.id === ideaId);
+            if (!idea) return;
+            
+            idea.favorite = !idea.favorite;
+            idea.updatedAt = Date.now();
+            
+            saveIdeas(ideas);
+            renderIdeas();
+            
+            const message = idea.favorite ? '⭐ Zu Favoriten hinzugefügt!' : '⭐ Aus Favoriten entfernt';
+            showMessage(message);
+        }
+
+        // Update idea rating
+        function updateRating(ideaId, rating) {
+            const ideas = loadIdeas();
+            const idea = ideas.find(i => i.id === ideaId);
+            if (!idea) return;
+            
+            idea.rating = rating;
+            idea.updatedAt = Date.now();
+            
+            saveIdeas(ideas);
+            renderIdeas();
+            showMessage(`⭐ Rating: ${rating}/5 Sterne`);
+        }
+
+        // Change idea status
+        function changeStatus(ideaId) {
+            const ideas = loadIdeas();
+            const idea = ideas.find(i => i.id === ideaId);
+            if (!idea) return;
+            
+            const statuses = ['brainstorming', 'researching', 'prototyping', 'testing', 'developing', 'paused'];
+            const currentIndex = statuses.indexOf(idea.status);
+            const nextIndex = (currentIndex + 1) % statuses.length;
+            
+            idea.status = statuses[nextIndex];
+            idea.updatedAt = Date.now();
+            
+            saveIdeas(ideas);
+            renderIdeas();
+            showMessage(`📊 Status: ${statusNames[idea.status]}`);
+        }
+
+        // Filter ideas
+        function filterIdeas(filter) {
+            currentFilter = filter;
+            
+            // Update filter buttons
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            renderIdeas();
+        }
+
+        // Get filtered ideas
+        function getFilteredIdeas() {
+            const ideas = loadIdeas();
+            
+            switch (currentFilter) {
+                case 'favorites':
+                    return ideas.filter(i => i.favorite);
+                case 'brainstorming':
+                case 'researching':
+                case 'prototyping':
+                case 'testing':
+                case 'developing':
+                case 'paused':
+                    return ideas.filter(i => i.status === currentFilter);
+                default:
+                    return ideas;
+            }
+        }
+
+        // Render star rating
+        function renderStarRating(ideaId, currentRating) {
+            let stars = '';
+            for (let i = 1; i <= 5; i++) {
+                const filled = i <= currentRating ? 'filled' : '';
+                stars += `<span class="star ${filled}" onclick="updateRating(${ideaId}, ${i})">⭐</span>`;
+            }
+            return stars;
+        }
+
+        // Format date for display
+        function formatDate(timestamp) {
+            const date = new Date(timestamp);
+            const now = new Date();
+            const diffTime = now - date;
+            const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+            
+            if (diffDays === 0) return 'Heute';
+            if (diffDays === 1) return 'Gestern';
+            if (diffDays < 7) return `vor ${diffDays} Tagen`;
+            if (diffDays < 30) return `vor ${Math.floor(diffDays / 7)} Wochen`;
+            return date.toLocaleDateString('de-DE');
+        }
+
+        // Render all ideas
+        function renderIdeas() {
+            const ideas = getFilteredIdeas();
+            const container = document.getElementById('ideasContainer');
+            
+            if (ideas.length === 0) {
+                const emptyMessage = currentFilter === 'all' ? 
+                    'Noch keine Ideas' : 
+                    `Keine Ideas in "${currentFilter}" gefunden`;
+                    
+                container.innerHTML = `
+                    <div class="empty">
+                        <div class="empty-icon">💡</div>
+                        <div class="empty-title">${emptyMessage}</div>
+                        <p class="empty-subtitle">${currentFilter === 'all' ? 'Erstelle deine erste Idee und beginne deine Entrepreneurship-Reise!' : 'Versuche einen anderen Filter oder erstelle neue Ideas.'}</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = '';
+            
+            // Group ideas by category
+            const categorizedIdeas = ideas.reduce((acc, idea) => {
+                const category = idea.category || 'other';
+                if (!acc[category]) acc[category] = [];
+                acc[category].push(idea);
+                return acc;
+            }, {});
+
+            // Sort ideas within each category by rating and update time
+            Object.keys(categorizedIdeas).forEach(category => {
+                categorizedIdeas[category].sort((a, b) => {
+                    // First sort by favorite status
+                    if (a.favorite && !b.favorite) return -1;
+                    if (!a.favorite && b.favorite) return 1;
+                    
+                    // Then by rating
+                    if (a.rating !== b.rating) return b.rating - a.rating;
+                    
+                    // Finally by update time
+                    return b.updatedAt - a.updatedAt;
+                });
+            });
+
+            // Render each category
+            Object.entries(categorizedIdeas).forEach(([category, categoryIdeas]) => {
+                // Calculate category stats
+                const totalInCategory = categoryIdeas.length;
+                const favoritesInCategory = categoryIdeas.filter(i => i.favorite).length;
+                
+                // Category Header
+                const categoryHeader = document.createElement('div');
+                categoryHeader.className = 'category-header';
+                categoryHeader.innerHTML = `
+                    <span>${categoryNames[category] || `📁 ${category}`}</span>
+                    <span class="category-stats">${favoritesInCategory}/${totalInCategory} favorisiert</span>
+                `;
+                container.appendChild(categoryHeader);
+                
+                // Render ideas in this category
+                categoryIdeas.forEach(idea => {
+                    const ideaElement = document.createElement('div');
+                    ideaElement.className = `idea-item ${idea.favorite ? 'favorite' : ''}`;
+                    
+                    ideaElement.innerHTML = `
+                        <div class="idea-header">
+                            <div class="idea-icon editable" onclick="editIdeaField(${idea.id}, 'icon', this)">${idea.icon}</div>
+                            <div class="idea-content">
+                                <div class="idea-title editable" onclick="editIdeaField(${idea.id}, 'title', this)">${idea.title}</div>
+                                <div class="idea-description editable" onclick="editIdeaField(${idea.id}, 'description', this)">${idea.description}</div>
+                                <div class="idea-meta">
+                                    <div class="idea-tag status-${idea.status}">${statusNames[idea.status] || '🧠 Brainstorming'}</div>
+                                    <div class="idea-tag">Erstellt ${formatDate(idea.createdAt)}</div>
+                                    ${idea.updatedAt !== idea.createdAt ? `<div class="idea-tag">Bearbeitet ${formatDate(idea.updatedAt)}</div>` : ''}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="idea-rating">
+                            ${renderStarRating(idea.id, idea.rating || 0)}
+                        </div>
+                        
+                        <div class="idea-actions">
+                            <button class="favorite-btn ${idea.favorite ? 'active' : ''}" onclick="toggleFavorite(${idea.id})">
+                                ${idea.favorite ? '⭐ Favorit' : '☆ Favorit'}
+                            </button>
+                            <button class="status-btn" onclick="changeStatus(${idea.id})">
+                                📊 Status ändern
+                            </button>
+                            <button class="btn-danger" onclick="deleteIdea(${idea.id})">
+                                🗑️
+                            </button>
+                        </div>
+                    `;
+                    
+                    container.appendChild(ideaElement);
+                });
+            });
+        }
+
+        // Prevent overscroll and handle touch events for iPhone
+        let touchStartY = 0;
+        
+        document.addEventListener('touchstart', function(e) {
+            touchStartY = e.touches[0].clientY;
+        }, { passive: true });
+
+        document.addEventListener('touchmove', function(e) {
+            const currentY = e.touches[0].clientY;
+            const deltaY = currentY - touchStartY;
+            
+            // Prevent overscroll at the top
+            if (window.scrollY === 0 && deltaY > 0) {
+                e.preventDefault();
+            }
+            
+            // Prevent overscroll at the bottom
+            const scrollHeight = document.documentElement.scrollHeight;
+            const clientHeight = document.documentElement.clientHeight;
+            const scrollTop = window.scrollY;
+            
+            if (scrollTop + clientHeight >= scrollHeight - 5 && deltaY < 0) {
+                e.preventDefault();
+            }
+        }, { passive: false });
+
+        // Prevent zoom on double tap
+        let lastTouchEnd = 0;
+        document.addEventListener('touchend', function (event) {
+            const now = Date.now();
+            if (now - lastTouchEnd <= 300) {
+                event.preventDefault();
+            }
+            lastTouchEnd = now;
+        }, false);
+
+        // Prevent context menu
+        document.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+        }, false);
+
+        // Initialize page
+        function init() {
+            updateQuickStats();
+            renderIdeas();
+
+            // Set viewport height for mobile browsers
+            const setVH = () => {
+                const vh = window.innerHeight * 0.01;
+                document.documentElement.style.setProperty('--vh', `${vh}px`);
+                document.body.style.minHeight = `${window.innerHeight}px`;
+            };
+            
+            setVH();
+            window.addEventListener('resize', setVH);
+            window.addEventListener('orientationchange', () => {
+                setTimeout(setVH, 100);
+            });
+
+            console.log('💡 Ideas page loaded successfully!');
+        }
+
+        // Listen for storage changes from other pages
+        window.addEventListener('storage', function(e) {
+            if (e.key === STORAGE_KEYS.ideas) {
+                updateQuickStats();
+                renderIdeas();
+                console.log('💡 Ideas data synchronized from other page');
+            }
+        });
+
+        // Refresh data when page becomes visible
+        document.addEventListener('visibilitychange', function() {
+            if (!document.hidden) {
+                updateQuickStats();
+                renderIdeas();
+            }
+        });
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', init);
+
+        // Keyboard shortcuts for faster navigation
+        document.addEventListener('keydown', function(e) {
+            // Only handle shortcuts if not editing
+            if (document.querySelector('.editing')) return;
+            
+            switch(e.key) {
+                case 'n':
+                case 'N':
+                    if (e.altKey || e.metaKey) {
+                        e.preventDefault();
+                        document.getElementById('newIdeaTitle').focus();
+                    }
+                    break;
+                case '1':
+                case '2':
+                case '3':
+                case '4':
+                case '5':
+                    if (e.altKey || e.metaKey) {
+                        e.preventDefault();
+                        const filterBtns = document.querySelectorAll('.filter-btn');
+                        const index = parseInt(e.key) - 1;
+                        if (filterBtns[index]) filterBtns[index].click();
+                    }
+                    break;
+                case 'Escape':
+                    // Clear form
+                    document.getElementById('newIdeaIcon').value = '';
+                    document.getElementById('newIdeaTitle').value = '';
+                    document.getElementById('newIdeaDescription').value = '';
+                    break;
+            }
+        });
+
+        // Enhanced idea analytics (for future use)
+        function getIdeaAnalytics() {
+            const ideas = loadIdeas();
+            
+            if (ideas.length === 0) {
+                return {
+                    totalIdeas: 0,
+                    favoriteIdeas: 0,
+                    avgRating: 0,
+                    categoryBreakdown: {},
+                    statusBreakdown: {},
+                    topRatedIdeas: []
+                };
+            }
+            
+            const favoriteIdeas = ideas.filter(i => i.favorite).length;
+            const totalRating = ideas.reduce((sum, idea) => sum + (idea.rating || 0), 0);
+            const avgRating = totalRating / ideas.length;
+            
+            // Category breakdown
+            const categoryBreakdown = {};
+            ideas.forEach(idea => {
+                const category = idea.category || 'other';
+                if (!categoryBreakdown[category]) {
+                    categoryBreakdown[category] = { total: 0, favorites: 0, avgRating: 0 };
+                }
+                categoryBreakdown[category].total++;
+                if (idea.favorite) categoryBreakdown[category].favorites++;
+                categoryBreakdown[category].avgRating += idea.rating || 0;
+            });
+
+            // Calculate average rating per category
+            Object.keys(categoryBreakdown).forEach(category => {
+                categoryBreakdown[category].avgRating = 
+                    categoryBreakdown[category].avgRating / categoryBreakdown[category].total;
+            });
+
+            // Status breakdown
+            const statusBreakdown = {};
+            ideas.forEach(idea => {
+                const status = idea.status || 'brainstorming';
+                if (!statusBreakdown[status]) statusBreakdown[status] = 0;
+                statusBreakdown[status]++;
+            });
+
+            // Top rated ideas
+            const topRatedIdeas = ideas
+                .filter(i => i.rating > 0)
+                .sort((a, b) => b.rating - a.rating)
+                .slice(0, 5);
+            
+            return {
+                totalIdeas: ideas.length,
+                favoriteIdeas: favoriteIdeas,
+                avgRating: avgRating,
+                categoryBreakdown: categoryBreakdown,
+                statusBreakdown: statusBreakdown,
+                topRatedIdeas: topRatedIdeas
+            };
+        }
+
+        // Export ideas data (for backup)
+        function exportIdeas() {
+            const ideas = loadIdeas();
+            const dataStr = JSON.stringify(ideas, null, 2);
+            const dataBlob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(dataBlob);
+            
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `ideas-backup-${new Date().toISOString().split('T')[0]}.json`;
+            link.click();
+            
+            URL.revokeObjectURL(url);
+            showMessage('📥 Ideas erfolgreich exportiert!');
+        }
+
+        // Debug functions (accessible from console)
+        window.ideasDebug = {
+            getAnalytics: getIdeaAnalytics,
+            export: exportIdeas,
+            loadIdeas: loadIdeas,
+            saveIdeas: saveIdeas,
+            calculateStats: calculateIdeaStats,
+            filterIdeas: filterIdeas
+        };
+
+        console.log('🔧 Debug functions available: window.ideasDebug');
+    </script>
+</body>
+</html>

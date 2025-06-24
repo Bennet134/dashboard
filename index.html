@@ -1,0 +1,1439 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Entrepreneur Hub">
+    <title>Dashboard - Entrepreneur Hub</title>
+    <style>
+        :root {
+            --safe-top: env(safe-area-inset-top, 47px);
+            --safe-bottom: env(safe-area-inset-bottom, 34px);
+            --bg-primary: #0a0a0a;
+            --bg-glass: rgba(255, 255, 255, 0.06);
+            --border-primary: rgba(255, 255, 255, 0.08);
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.68);
+            --text-tertiary: rgba(255, 255, 255, 0.45);
+            --accent-blue: #007aff;
+            --accent-green: #34c759;
+            --accent-orange: #ff9500;
+            --accent-red: #ff3b30;
+            --accent-purple: #af52de;
+            --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --gradient-fire: linear-gradient(135deg, #ff9500 0%, #ff3b30 100%);
+            --shadow-medium: 0 4px 16px rgba(0, 0, 0, 0.25);
+            --blur-medium: blur(20px);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+
+        html {
+            height: 100%;
+            overflow-x: hidden;
+            -webkit-text-size-adjust: 100%;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', system-ui, sans-serif;
+            background: var(--bg-primary);
+            background-image: 
+                radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.15) 0%, transparent 50%);
+            background-attachment: fixed;
+            min-height: 100vh;
+            color: var(--text-primary);
+            overflow-x: hidden;
+            overscroll-behavior: none;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: -200px;
+            left: 0;
+            right: 0;
+            height: 200px;
+            background: var(--bg-primary);
+            z-index: -1;
+        }
+
+        .app-container {
+            max-width: 428px;
+            margin: 0 auto;
+            padding: var(--safe-top) 20px 0 20px;
+            padding-bottom: calc(100px + var(--safe-bottom));
+            min-height: 100vh;
+        }
+
+        .app-header {
+            background: var(--bg-glass);
+            backdrop-filter: var(--blur-medium);
+            border: 1px solid var(--border-primary);
+            border-radius: 24px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow-medium);
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .avatar {
+            width: 56px;
+            height: 56px;
+            background: var(--gradient-primary);
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+            box-shadow: var(--shadow-medium);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .avatar::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        .header-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .header-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+            line-height: 1.2;
+            background: var(--gradient-primary);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header-subtitle {
+            font-size: 15px;
+            color: var(--text-secondary);
+            font-weight: 500;
+            line-height: 1.2;
+        }
+
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.04);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            border-radius: 16px;
+            padding: 16px 12px;
+            text-align: center;
+            transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--gradient-primary);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .stat-card:active {
+            transform: scale(0.95);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .stat-card:active::before {
+            opacity: 1;
+        }
+
+        .stat-value {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text-primary);
+            line-height: 1;
+            margin-bottom: 6px;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .stat-label {
+            font-size: 11px;
+            color: var(--text-tertiary);
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            font-weight: 600;
+            line-height: 1;
+        }
+
+        .card {
+            background: var(--bg-glass);
+            backdrop-filter: var(--blur-medium);
+            border: 1px solid var(--border-primary);
+            border-radius: 24px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow-medium);
+            transition: all 0.4s cubic-bezier(0.4, 0.0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--gradient-primary);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .card-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            line-height: 1.2;
+        }
+
+        .btn {
+            background: var(--gradient-primary);
+            border: none;
+            border-radius: 16px;
+            padding: 18px 24px;
+            color: white;
+            font-size: 17px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+            width: 100%;
+            margin: 12px 0;
+            min-height: 56px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+            text-decoration: none;
+        }
+
+        .btn:active {
+            transform: scale(0.96);
+            box-shadow: var(--shadow-medium);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border-primary);
+            color: var(--text-primary);
+        }
+
+        .empty {
+            text-align: center;
+            padding: 48px 24px;
+            color: var(--text-secondary);
+            background: rgba(255, 255, 255, 0.02);
+            border: 2px dashed rgba(255, 255, 255, 0.04);
+            border-radius: 20px;
+        }
+
+        .empty-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+            opacity: 0.7;
+        }
+
+        .empty-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: var(--text-primary);
+        }
+
+        .empty-subtitle {
+            font-size: 15px;
+            color: var(--text-tertiary);
+            line-height: 1.4;
+        }
+
+        .item {
+            background: rgba(255, 255, 255, 0.04);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            border-radius: 18px;
+            padding: 16px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+            text-decoration: none;
+        }
+
+        .item:active {
+            transform: scale(0.98);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .item-icon {
+            font-size: 22px;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.06);
+            border-radius: 12px;
+            flex-shrink: 0;
+        }
+
+        .item-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .item-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 2px;
+            line-height: 1.3;
+            word-wrap: break-word;
+        }
+
+        .item-subtitle {
+            font-size: 13px;
+            color: var(--text-secondary);
+            line-height: 1.3;
+            word-wrap: break-word;
+        }
+
+        .item-meta {
+            font-size: 11px;
+            color: var(--text-tertiary);
+            margin-top: 2px;
+        }
+
+        .progress-container {
+            margin: 16px 0;
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .progress-label {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .progress-percent {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--accent-orange);
+            font-variant-numeric: tabular-nums;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.8s cubic-bezier(0.4, 0.0, 0.2, 1);
+        }
+
+        .challenge {
+            background: linear-gradient(135deg, rgba(255, 149, 0, 0.1) 0%, rgba(255, 59, 48, 0.05) 100%);
+            border: 1px solid rgba(255, 149, 0, 0.2);
+            border-radius: 20px;
+            padding: 20px;
+            position: relative;
+            margin-bottom: 16px;
+        }
+
+        .challenge::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent-orange), var(--accent-red));
+            border-radius: 20px 20px 0 0;
+        }
+
+        .challenge-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 16px;
+            gap: 16px;
+        }
+
+        .challenge-title {
+            font-size: 17px;
+            font-weight: 700;
+            color: var(--text-primary);
+            flex: 1;
+            line-height: 1.3;
+        }
+
+        .challenge-status {
+            background: var(--accent-blue);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 8px;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            flex-shrink: 0;
+        }
+
+        .challenge-progress {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .challenge-progress-text {
+            font-size: 13px;
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+
+        .challenge-progress-percent {
+            font-size: 14px;
+            color: var(--accent-orange);
+            font-weight: 700;
+        }
+
+        .challenge-bar {
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            overflow: hidden;
+            margin-bottom: 8px;
+        }
+
+        .challenge-bar-fill {
+            height: 100%;
+            background: var(--gradient-fire);
+            border-radius: 3px;
+            transition: width 0.8s cubic-bezier(0.4, 0.0, 0.2, 1);
+        }
+
+        .challenge-meta {
+            font-size: 12px;
+            color: var(--text-tertiary);
+        }
+
+        .overview-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .overview-item {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            border-radius: 12px;
+            padding: 12px;
+            text-align: center;
+        }
+
+        .overview-value {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+
+        .overview-label {
+            font-size: 10px;
+            color: var(--text-tertiary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+        }
+
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(28, 28, 30, 0.95);
+            backdrop-filter: blur(40px);
+            border-top: 1px solid var(--border-primary);
+            padding: 8px 20px calc(8px + var(--safe-bottom)) 20px;
+            z-index: 1000;
+        }
+
+        .nav-container {
+            max-width: 428px;
+            margin: 0 auto;
+        }
+
+        .nav-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 4px;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 8px 4px;
+            border-radius: 14px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+            color: var(--text-tertiary);
+            position: relative;
+            text-decoration: none;
+        }
+
+        .nav-item.active {
+            color: var(--accent-blue);
+            transform: scale(1.05);
+        }
+
+        .nav-item.active::before {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 24px;
+            height: 2px;
+            background: var(--accent-blue);
+            border-radius: 1px;
+        }
+
+        .nav-item:active {
+            transform: scale(0.9);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .nav-icon {
+            font-size: 22px;
+            margin-bottom: 4px;
+            line-height: 1;
+        }
+
+        .nav-label {
+            font-size: 10px;
+            font-weight: 600;
+            line-height: 1;
+        }
+
+        .editable {
+            cursor: pointer;
+            border-radius: 8px;
+            padding: 4px 6px;
+            margin: -4px -6px;
+            transition: all 0.2s ease;
+        }
+
+        .editable:active {
+            background: rgba(0, 122, 255, 0.1);
+        }
+
+        .editable.editing {
+            background: rgba(0, 122, 255, 0.15);
+        }
+
+        .editable input {
+            background: transparent;
+            border: none;
+            outline: none;
+            font: inherit;
+            color: inherit;
+            width: 100%;
+        }
+
+        @media (max-width: 430px) {
+            .app-container {
+                padding-left: 16px;
+                padding-right: 16px;
+            }
+        }
+
+        @media (max-width: 390px) {
+            .app-container {
+                padding-left: 12px;
+                padding-right: 12px;
+            }
+            .card {
+                padding: 20px;
+            }
+        }
+
+        body {
+            overscroll-behavior-y: none;
+        }
+
+        ::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* Toast animation styles */
+        @keyframes toastAnimation {
+            0% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
+            10% { opacity: 1; transform: translate(-50%, -50%) scale(1.05); }
+            90% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+            100% { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-content">
+                <div class="avatar">🚀</div>
+                <div class="header-info">
+                    <h1 class="header-title editable" onclick="editText(this)">Hey Bennet! 👋</h1>
+                    <p class="header-subtitle" id="currentDate">Bereit etwas zu erreichen?</p>
+                </div>
+            </div>
+            <div class="stats-container">
+                <div class="stat-card">
+                    <div class="stat-value" id="habitStreak">0</div>
+                    <div class="stat-label">Day Streak</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="completionRate">0%</div>
+                    <div class="stat-label">Success Rate</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="todayTasks">0/0</div>
+                    <div class="stat-label">Today</div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Dashboard Content -->
+        <main>
+            <!-- Current Challenge Widget -->
+            <section class="card">
+                <h2 class="card-title">🔥 Aktuelle Challenge</h2>
+                <div id="currentChallengeWidget">
+                    <div class="empty">
+                        <div class="empty-icon">🎯</div>
+                        <div class="empty-title">Keine aktive Challenge</div>
+                        <p class="empty-subtitle">Starte eine neue Challenge!</p>
+                    </div>
+                </div>
+                <a href="challenges.html" class="btn">Challenge verwalten</a>
+            </section>
+
+            <!-- Today's Habits -->
+            <section class="card">
+                <h2 class="card-title">🔄 Heute's Habits</h2>
+                <div id="todayHabitsContainer">
+                    <div class="empty">
+                        <div class="empty-icon">🌟</div>
+                        <div class="empty-title">Noch keine Habits</div>
+                        <p class="empty-subtitle">Füge dein erstes Habit hinzu!</p>
+                    </div>
+                </div>
+                <a href="habits.html" class="btn btn-secondary">Habits verwalten</a>
+            </section>
+
+            <!-- Goals Progress -->
+            <section class="card">
+                <h2 class="card-title">🎯 Ziele Progress</h2>
+                <div id="goalsOverview">
+                    <div class="empty">
+                        <div class="empty-icon">🎯</div>
+                        <div class="empty-title">Noch keine Ziele</div>
+                        <p class="empty-subtitle">Setze dir dein erstes Ziel!</p>
+                    </div>
+                </div>
+                <a href="goals.html" class="btn btn-secondary">Ziele verwalten</a>
+            </section>
+
+            <!-- Recent Ideas -->
+            <section class="card">
+                <h2 class="card-title">💡 Letzte Ideen</h2>
+                <div id="recentIdeas">
+                    <div class="empty">
+                        <div class="empty-icon">💡</div>
+                        <div class="empty-title">Noch keine Ideen</div>
+                        <p class="empty-subtitle">Sammle deine ersten Ideen!</p>
+                    </div>
+                </div>
+                <a href="ideas.html" class="btn btn-secondary">Ideen sammeln</a>
+            </section>
+
+            <!-- Daily Motivation -->
+            <section class="card">
+                <h2 class="card-title">💡 Daily Motivation</h2>
+                <div style="text-align: center; margin-bottom: 24px;">
+                    <div style="font-size: 40px; margin-bottom: 16px;">🎯</div>
+                    <h3 style="font-size: 20px; font-weight: 700; margin-bottom: 16px; line-height: 1.3; color: var(--text-primary);" id="motivationTitle">Build Systems, Not Goals</h3>
+                    <p style="font-size: 16px; line-height: 1.5; margin-bottom: 12px; color: var(--text-secondary);" id="motivationText">
+                        "You do not rise to the level of your goals. You fall to the level of your systems."
+                    </p>
+                    <p style="font-size: 14px; color: var(--accent-blue); font-weight: 600;" id="motivationAuthor">
+                        — James Clear
+                    </p>
+                </div>
+                <button class="btn btn-secondary" onclick="getNewQuote()">
+                    Neues Zitat laden
+                </button>
+            </section>
+        </main>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+        <div class="nav-container">
+            <div class="nav-grid">
+                <a href="index.html" class="nav-item active">
+                    <div class="nav-icon">🏠</div>
+                    <div class="nav-label">Home</div>
+                </a>
+                <a href="habits.html" class="nav-item">
+                    <div class="nav-icon">🔄</div>
+                    <div class="nav-label">Habits</div>
+                </a>
+                <a href="challenges.html" class="nav-item">
+                    <div class="nav-icon">🔥</div>
+                    <div class="nav-label">Challenges</div>
+                </a>
+                <a href="goals.html" class="nav-item">
+                    <div class="nav-icon">🎯</div>
+                    <div class="nav-label">Goals</div>
+                </a>
+                <a href="ideas.html" class="nav-item">
+                    <div class="nav-icon">💡</div>
+                    <div class="nav-label">Ideas</div>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <script>
+        // Shared Storage Keys
+        const STORAGE_KEYS = {
+            habits: 'entrepreneurDashboard_habits',
+            goals: 'entrepreneurDashboard_goals',
+            challenges: 'entrepreneurDashboard_challenges',
+            ideas: 'entrepreneurDashboard_ideas',
+            settings: 'entrepreneurDashboard_settings'
+        };
+
+        // Motivational Quotes
+        const motivationalQuotes = [
+            {
+                title: "Build Systems, Not Goals",
+                text: "You do not rise to the level of your goals. You fall to the level of your systems.",
+                author: "James Clear"
+            },
+            {
+                title: "Start Before You're Ready",
+                text: "The way to get started is to quit talking and begin doing.",
+                author: "Walt Disney"
+            },
+            {
+                title: "Perfect Timing Is Myth",
+                text: "You don't have to be great to get started, but you have to get started to be great.",
+                author: "Les Brown"
+            },
+            {
+                title: "Embrace Failure",
+                text: "Failure is simply the opportunity to begin again, this time more intelligently.",
+                author: "Henry Ford"
+            },
+            {
+                title: "Action Over Perfection",
+                text: "Done is better than perfect.",
+                author: "Sheryl Sandberg"
+            },
+            {
+                title: "Focus on Process",
+                text: "Success is a process, not an event.",
+                author: "Jeff Olson"
+            },
+            {
+                title: "Compound Growth",
+                text: "Small improvements every day lead to big results over time.",
+                author: "Robin Sharma"
+            },
+            {
+                title: "Consistency Wins",
+                text: "It's not what we do once in a while that shapes our lives, but what we do consistently.",
+                author: "Tony Robbins"
+            }
+        ];
+
+        // Load data from localStorage
+        function loadData(key) {
+            try {
+                const data = localStorage.getItem(STORAGE_KEYS[key]);
+                return data ? JSON.parse(data) : [];
+            } catch (e) {
+                console.error(`Error loading ${key}:`, e);
+                return [];
+            }
+        }
+
+        // Get current day index (0 = Monday, 6 = Sunday)
+        function getCurrentDayIndex() {
+            const today = new Date();
+            const dayOfWeek = today.getDay(); // 0 = Sunday, 1 = Monday, etc.
+            // Convert to our format: 0 = Monday, 6 = Sunday
+            return dayOfWeek === 0 ? 6 : dayOfWeek - 1;
+        }
+
+        // Update current date display
+        function updateCurrentDate() {
+            const today = new Date();
+            const options = { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            };
+            const dateString = today.toLocaleDateString('de-DE', options);
+            document.getElementById('currentDate').textContent = `${dateString} - Bereit etwas zu erreichen?`;
+        }
+
+        // Calculate stats from all data sources
+        function calculateStats() {
+            const habits = loadData('habits');
+            const goals = loadData('goals');
+            const challenges = loadData('challenges');
+            const ideas = loadData('ideas');
+            
+            // Get current day index
+            const todayIndex = getCurrentDayIndex();
+            
+            // Habits stats
+            let habitStreak = 0;
+            let completionRate = 0;
+            let todayCompleted = 0;
+            
+            if (habits.length > 0) {
+                // Today's completion
+                todayCompleted = habits.filter(h => h.streak && h.streak[todayIndex]).length;
+                
+                // Calculate current streak (count backwards from today)
+                for (let i = 0; i < 7; i++) {
+                    const dayIndex = (todayIndex - i + 7) % 7;
+                    const dayCompleted = habits.filter(h => h.streak && h.streak[dayIndex]).length;
+                    const requiredHabits = Math.ceil(habits.length * 0.7);
+                    
+                    if (dayCompleted >= requiredHabits) {
+                        habitStreak++;
+                    } else {
+                        break;
+                    }
+                }
+                
+                // Calculate completion rate
+                const totalPossible = habits.length * 7;
+                const totalCompleted = habits.reduce((sum, habit) => 
+                    sum + (habit.streak ? habit.streak.reduce((daySum, day) => daySum + day, 0) : 0), 0);
+                completionRate = totalPossible > 0 ? Math.round((totalCompleted / totalPossible) * 100) : 0;
+            }
+            
+            return {
+                habitStreak: habitStreak,
+                completionRate: completionRate,
+                todayCompleted: todayCompleted,
+                totalHabits: habits.length,
+                totalGoals: goals.length,
+                completedGoals: goals.filter(g => g.progress >= 100).length,
+                totalChallenges: challenges.length,
+                activeChallenges: challenges.filter(c => !c.completed && getDaysRemaining(c) > 0).length,
+                totalIdeas: ideas.length,
+                favoriteIdeas: ideas.filter(i => i.favorite).length
+            };
+        }
+
+        // Update stats in header
+        function updateStats() {
+            const stats = calculateStats();
+            
+            document.getElementById('habitStreak').textContent = stats.habitStreak;
+            document.getElementById('completionRate').textContent = stats.completionRate + '%';
+            document.getElementById('todayTasks').textContent = `${stats.todayCompleted}/${stats.totalHabits}`;
+        }
+
+        // Calculate days remaining for a challenge
+        function getDaysRemaining(challenge) {
+            if (challenge.completed) return 0;
+            
+            const now = Date.now();
+            const endDate = challenge.startDate + (challenge.duration * 24 * 60 * 60 * 1000);
+            const remaining = Math.ceil((endDate - now) / (24 * 60 * 60 * 1000));
+            
+            return Math.max(0, remaining);
+        }
+
+        // Calculate progress percentage for a challenge
+        function getChallengeProgress(challenge) {
+            if (challenge.completed) return 100;
+            
+            const now = Date.now();
+            const elapsed = now - challenge.startDate;
+            const total = challenge.duration * 24 * 60 * 60 * 1000;
+            const progress = Math.min(100, Math.max(0, (elapsed / total) * 100));
+            
+            return Math.round(progress);
+        }
+
+        // Render current challenge
+        function renderCurrentChallenge() {
+            const challenges = loadData('challenges');
+            const container = document.getElementById('currentChallengeWidget');
+            
+            // Find active challenge
+            const activeChallenge = challenges.find(c => !c.completed && getDaysRemaining(c) > 0);
+            
+            if (!activeChallenge) {
+                container.innerHTML = `
+                    <div class="empty">
+                        <div class="empty-icon">🎯</div>
+                        <div class="empty-title">Keine aktive Challenge</div>
+                        <p class="empty-subtitle">Starte eine neue Challenge!</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            const progress = getChallengeProgress(activeChallenge);
+            const daysRemaining = getDaysRemaining(activeChallenge);
+            
+            container.innerHTML = `
+                <div class="challenge">
+                    <div class="challenge-header">
+                        <div class="challenge-title">${activeChallenge.icon} ${activeChallenge.name}</div>
+                        <div class="challenge-status">Aktiv</div>
+                    </div>
+                    <div class="challenge-progress">
+                        <div class="challenge-progress-text">Fortschritt</div>
+                        <div class="challenge-progress-percent">${progress}%</div>
+                    </div>
+                    <div class="challenge-bar">
+                        <div class="challenge-bar-fill" style="width: ${progress}%"></div>
+                    </div>
+                    <div class="challenge-meta">
+                        ${activeChallenge.description} • Noch ${daysRemaining} Tag${daysRemaining !== 1 ? 'e' : ''}
+                    </div>
+                </div>
+            `;
+        }
+
+        // Render today's habits
+        function renderTodayHabits() {
+            const habits = loadData('habits');
+            const container = document.getElementById('todayHabitsContainer');
+            
+            if (habits.length === 0) {
+                container.innerHTML = `
+                    <div class="empty">
+                        <div class="empty-icon">🌟</div>
+                        <div class="empty-title">Noch keine Habits</div>
+                        <p class="empty-subtitle">Füge dein erstes Habit hinzu!</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            // Get current day index
+            const todayIndex = getCurrentDayIndex();
+            
+            // Show max 5 habits, prioritize incomplete ones
+            const sortedHabits = habits.sort((a, b) => {
+                const aCompleted = a.streak && a.streak[todayIndex];
+                const bCompleted = b.streak && b.streak[todayIndex];
+                if (aCompleted && !bCompleted) return 1;
+                if (!aCompleted && bCompleted) return -1;
+                return 0;
+            }).slice(0, 5);
+            
+            const habitsList = sortedHabits.map(habit => {
+                const isCompleted = habit.streak && habit.streak[todayIndex];
+                return `
+                    <a href="habits.html" class="item">
+                        <div class="item-icon">${habit.icon}</div>
+                        <div class="item-content">
+                            <div class="item-title">${habit.name}</div>
+                            <div class="item-subtitle">${habit.description}</div>
+                            <div class="item-meta">${isCompleted ? '✅ Erledigt' : '⏳ Noch offen'}</div>
+                        </div>
+                    </a>
+                `;
+            }).join('');
+            
+            const completedToday = habits.filter(h => h.streak && h.streak[todayIndex]).length;
+            
+            container.innerHTML = `
+                <div class="overview-grid">
+                    <div class="overview-item">
+                        <div class="overview-value">${completedToday}/${habits.length}</div>
+                        <div class="overview-label">Heute erledigt</div>
+                    </div>
+                    <div class="overview-item">
+                        <div class="overview-value">${Math.round((completedToday / habits.length) * 100)}%</div>
+                        <div class="overview-label">Fortschritt</div>
+                    </div>
+                </div>
+                ${habitsList}
+                ${habits.length > 5 ? `<div style="text-align: center; margin-top: 12px; color: var(--text-tertiary); font-size: 12px;">+${habits.length - 5} weitere Habits</div>` : ''}
+            `;
+        }
+
+        // Render goals overview
+        function renderGoalsOverview() {
+            const goals = loadData('goals');
+            const container = document.getElementById('goalsOverview');
+            
+            if (goals.length === 0) {
+                container.innerHTML = `
+                    <div class="empty">
+                        <div class="empty-icon">🎯</div>
+                        <div class="empty-title">Noch keine Ziele</div>
+                        <p class="empty-subtitle">Setze dir dein erstes Ziel!</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            // Show top 3 goals by priority and progress
+            const sortedGoals = goals.sort((a, b) => {
+                const priorityOrder = { high: 0, medium: 1, low: 2 };
+                const aPriority = priorityOrder[a.priority] || 1;
+                const bPriority = priorityOrder[b.priority] || 1;
+                if (aPriority !== bPriority) return aPriority - bPriority;
+                return (b.progress || 0) - (a.progress || 0);
+            }).slice(0, 3);
+            
+            const goalsList = sortedGoals.map(goal => {
+                const progress = goal.progress || 0;
+                const isOverdue = goal.deadline && new Date(goal.deadline) < new Date() && progress < 100;
+                return `
+                    <a href="goals.html" class="item">
+                        <div class="item-icon">${goal.icon}</div>
+                        <div class="item-content">
+                            <div class="item-title">${goal.title}</div>
+                            <div class="item-subtitle">${goal.description}</div>
+                            <div class="item-meta">${progress}% erledigt ${isOverdue ? '• Überfällig!' : ''}</div>
+                        </div>
+                    </a>
+                `;
+            }).join('');
+            
+            const completedGoals = goals.filter(g => g.progress >= 100).length;
+            const avgProgress = Math.round(goals.reduce((sum, g) => sum + (g.progress || 0), 0) / goals.length);
+            
+            container.innerHTML = `
+                <div class="overview-grid">
+                    <div class="overview-item">
+                        <div class="overview-value">${completedGoals}/${goals.length}</div>
+                        <div class="overview-label">Erreicht</div>
+                    </div>
+                    <div class="overview-item">
+                        <div class="overview-value">${avgProgress}%</div>
+                        <div class="overview-label">Ø Fortschritt</div>
+                    </div>
+                </div>
+                ${goalsList}
+                ${goals.length > 3 ? `<div style="text-align: center; margin-top: 12px; color: var(--text-tertiary); font-size: 12px;">+${goals.length - 3} weitere Goals</div>` : ''}
+            `;
+        }
+
+        // Render recent ideas
+        function renderRecentIdeas() {
+            const ideas = loadData('ideas');
+            const container = document.getElementById('recentIdeas');
+            
+            if (ideas.length === 0) {
+                container.innerHTML = `
+                    <div class="empty">
+                        <div class="empty-icon">💡</div>
+                        <div class="empty-title">Noch keine Ideen</div>
+                        <p class="empty-subtitle">Sammle deine ersten Ideen!</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            // Show top 3 ideas by rating and recent updates
+            const sortedIdeas = ideas.sort((a, b) => {
+                if (a.favorite && !b.favorite) return -1;
+                if (!a.favorite && b.favorite) return 1;
+                if (a.rating !== b.rating) return (b.rating || 0) - (a.rating || 0);
+                return (b.updatedAt || b.createdAt) - (a.updatedAt || a.createdAt);
+            }).slice(0, 3);
+            
+            const ideasList = sortedIdeas.map(idea => {
+                const stars = '⭐'.repeat(idea.rating || 0);
+                const statusEmojis = {
+                    brainstorming: '🧠',
+                    researching: '🔍',
+                    prototyping: '🛠️',
+                    testing: '🧪',
+                    developing: '🚀',
+                    paused: '⏸️'
+                };
+                return `
+                    <a href="ideas.html" class="item">
+                        <div class="item-icon">${idea.icon}</div>
+                        <div class="item-content">
+                            <div class="item-title">${idea.title} ${idea.favorite ? '⭐' : ''}</div>
+                            <div class="item-subtitle">${idea.description}</div>
+                            <div class="item-meta">${statusEmojis[idea.status] || '🧠'} ${stars || 'Nicht bewertet'}</div>
+                        </div>
+                    </a>
+                `;
+            }).join('');
+            
+            const favoriteIdeas = ideas.filter(i => i.favorite).length;
+            const avgRating = ideas.length > 0 ? (ideas.reduce((sum, i) => sum + (i.rating || 0), 0) / ideas.length).toFixed(1) : 0;
+            
+            container.innerHTML = `
+                <div class="overview-grid">
+                    <div class="overview-item">
+                        <div class="overview-value">${favoriteIdeas}</div>
+                        <div class="overview-label">Favoriten</div>
+                    </div>
+                    <div class="overview-item">
+                        <div class="overview-value">${avgRating}</div>
+                        <div class="overview-label">Ø Rating</div>
+                    </div>
+                </div>
+                ${ideasList}
+                ${ideas.length > 3 ? `<div style="text-align: center; margin-top: 12px; color: var(--text-tertiary); font-size: 12px;">+${ideas.length - 3} weitere Ideas</div>` : ''}
+            `;
+        }
+
+        // Get new motivational quote
+        function getNewQuote() {
+            const randomQuote = motivationalQuotes[Math.floor(Math.random() * motivationalQuotes.length)];
+            document.getElementById('motivationTitle').textContent = randomQuote.title;
+            document.getElementById('motivationText').textContent = randomQuote.text;
+            document.getElementById('motivationAuthor').textContent = `— ${randomQuote.author}`;
+        }
+
+        // Edit text functionality
+        function editText(element) {
+            if (element.classList.contains('editing')) return;
+            
+            element.classList.add('editing');
+            const currentText = element.textContent.trim();
+            
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.value = currentText;
+            input.style.fontSize = getComputedStyle(element).fontSize;
+            input.style.fontWeight = getComputedStyle(element).fontWeight;
+            input.style.background = 'rgba(0, 122, 255, 0.1)';
+            input.style.border = '2px solid var(--accent-blue)';
+            input.style.borderRadius = '8px';
+            input.style.padding = '6px';
+            
+            element.innerHTML = '';
+            element.appendChild(input);
+            input.focus();
+            input.select();
+            
+            const finish = () => {
+                const newValue = input.value.trim() || currentText;
+                element.textContent = newValue;
+                element.classList.remove('editing');
+                
+                // Save to localStorage
+                try {
+                    localStorage.setItem('entrepreneurDashboard_userName', newValue);
+                } catch (e) {
+                    console.error('Error saving name:', e);
+                }
+            };
+            
+            input.onblur = finish;
+            input.onkeydown = (e) => {
+                if (e.key === 'Enter') finish();
+                if (e.key === 'Escape') {
+                    element.textContent = currentText;
+                    element.classList.remove('editing');
+                }
+            };
+        }
+
+        // Load saved user name
+        function loadUserName() {
+            try {
+                const savedName = localStorage.getItem('entrepreneurDashboard_userName');
+                if (savedName) {
+                    document.querySelector('.header-title').textContent = savedName;
+                }
+            } catch (e) {
+                console.error('Error loading name:', e);
+            }
+        }
+
+        // Prevent overscroll and handle touch events for iPhone
+        let touchStartY = 0;
+        
+        document.addEventListener('touchstart', function(e) {
+            touchStartY = e.touches[0].clientY;
+        }, { passive: true });
+
+        document.addEventListener('touchmove', function(e) {
+            const currentY = e.touches[0].clientY;
+            const deltaY = currentY - touchStartY;
+            
+            // Prevent overscroll at the top
+            if (window.scrollY === 0 && deltaY > 0) {
+                e.preventDefault();
+            }
+            
+            // Prevent overscroll at the bottom
+            const scrollHeight = document.documentElement.scrollHeight;
+            const clientHeight = document.documentElement.clientHeight;
+            const scrollTop = window.scrollY;
+            
+            if (scrollTop + clientHeight >= scrollHeight - 5 && deltaY < 0) {
+                e.preventDefault();
+            }
+        }, { passive: false });
+
+        // Prevent zoom on double tap
+        let lastTouchEnd = 0;
+        document.addEventListener('touchend', function (event) {
+            const now = Date.now();
+            if (now - lastTouchEnd <= 300) {
+                event.preventDefault();
+            }
+            lastTouchEnd = now;
+        }, false);
+
+        // Prevent context menu
+        document.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+        }, false);
+
+        // Initialize page
+        function init() {
+            updateCurrentDate();
+            loadUserName();
+            updateStats();
+            renderCurrentChallenge();
+            renderTodayHabits();
+            renderGoalsOverview();
+            renderRecentIdeas();
+
+            // Update date at midnight
+            const now = new Date();
+            const tomorrow = new Date(now);
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            tomorrow.setHours(0, 0, 0, 0);
+            const msUntilMidnight = tomorrow.getTime() - now.getTime();
+            
+            setTimeout(() => {
+                updateCurrentDate();
+                updateStats();
+                renderTodayHabits();
+                
+                // Set daily interval for future updates
+                setInterval(() => {
+                    updateCurrentDate();
+                    updateStats();
+                    renderTodayHabits();
+                }, 24 * 60 * 60 * 1000);
+            }, msUntilMidnight);
+
+            // Set viewport height for mobile browsers
+            const setVH = () => {
+                const vh = window.innerHeight * 0.01;
+                document.documentElement.style.setProperty('--vh', `${vh}px`);
+                document.body.style.minHeight = `${window.innerHeight}px`;
+            };
+            
+            setVH();
+            window.addEventListener('resize', setVH);
+            window.addEventListener('orientationchange', () => {
+                setTimeout(setVH, 100);
+            });
+
+            console.log('🏠 Dashboard loaded successfully!');
+            console.log(`📅 Current day index: ${getCurrentDayIndex()} (${['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'][getCurrentDayIndex()]})`);
+        }
+
+        // Listen for storage changes from other pages
+        window.addEventListener('storage', function(e) {
+            if (Object.values(STORAGE_KEYS).includes(e.key)) {
+                updateStats();
+                renderCurrentChallenge();
+                renderTodayHabits();
+                renderGoalsOverview();
+                renderRecentIdeas();
+                console.log('🔄 Dashboard data synchronized from other page');
+            }
+        });
+
+        // Refresh data when page becomes visible
+        document.addEventListener('visibilitychange', function() {
+            if (!document.hidden) {
+                updateCurrentDate();
+                updateStats();
+                renderCurrentChallenge();
+                renderTodayHabits();
+                renderGoalsOverview();
+                renderRecentIdeas();
+            }
+        });
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', init);
+
+        // Auto-refresh every 5 minutes to keep data current
+        setInterval(() => {
+            updateStats();
+            renderCurrentChallenge();
+            renderTodayHabits();
+            renderGoalsOverview();
+            renderRecentIdeas();
+        }, 5 * 60 * 1000);
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            if (document.querySelector('.editing')) return;
+            
+            switch(e.key) {
+                case 'h':
+                case 'H':
+                    if (e.altKey || e.metaKey) {
+                        e.preventDefault();
+                        window.location.href = 'habits.html';
+                    }
+                    break;
+                case 'g':
+                case 'G':
+                    if (e.altKey || e.metaKey) {
+                        e.preventDefault();
+                        window.location.href = 'goals.html';
+                    }
+                    break;
+                case 'c':
+                case 'C':
+                    if (e.altKey || e.metaKey) {
+                        e.preventDefault();
+                        window.location.href = 'challenges.html';
+                    }
+                    break;
+                case 'i':
+                case 'I':
+                    if (e.altKey || e.metaKey) {
+                        e.preventDefault();
+                        window.location.href = 'ideas.html';
+                    }
+                    break;
+                case 'q':
+                case 'Q':
+                    if (e.altKey || e.metaKey) {
+                        e.preventDefault();
+                        getNewQuote();
+                    }
+                    break;
+            }
+        });
+
+        // Performance monitoring
+        window.addEventListener('load', function() {
+            setTimeout(() => {
+                if (performance.getEntriesByType) {
+                    const perfData = performance.getEntriesByType('navigation')[0];
+                    if (perfData) {
+                        console.log(`⚡ Dashboard loaded in ${Math.round(perfData.loadEventEnd - perfData.fetchStart)}ms`);
+                    }
+                }
+            }, 0);
+        });
+
+        // Debug functions (accessible from console)
+        window.dashboardDebug = {
+            getStats: calculateStats,
+            refreshAll: () => {
+                updateStats();
+                renderCurrentChallenge();
+                renderTodayHabits();
+                renderGoalsOverview();
+                renderRecentIdeas();
+            },
+            loadData: loadData,
+            getNewQuote: getNewQuote
+        };
+
+        console.log('🔧 Debug functions available: window.dashboardDebug');
+        console.log('⌨️ Keyboard shortcuts: Alt+H (Habits), Alt+G (Goals), Alt+C (Challenges), Alt+I (Ideas), Alt+Q (New Quote)');
+    </script>
+</body>
+</html>
