@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Entrepreneur Hub">
+    <title>Dashboard - Entrepreneur Hub</title>
+    <style>
+        :root {
+            --safe-top: env(safe-area-inset-top, 47px);
+            --safe-bottom: env(safe-area-inset-bottom, 34px);
+            --bg-primary: #0a0a0a;
+            --bg-glass: rgba(255, 255, 255, 0.06);
+            --border-primary: rgba(255, 255, 255, 0.08);
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.68);
+            --text-tertiary: rgba(255, 255, 255, 0.45);
+            --accent-blue: #007aff;
+            --accent-green: #34c759;
+            --accent-orange: #ff9500;
+            --accent-red: #ff3b30;
+            --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --shadow-medium: 0 4px 16px rgba(0, 0, 0, 0.25);
+            --blur-medium: blur(20px);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+
+        html {
+            height: 100%;
+            overflow-x: hidden;
+            -webkit-text-size-adjust: 100%;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', system-ui, sans-serif;
+            background: var(--bg-primary);
+            background-image: 
+                radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.15) 0%, transparent 50%);
+            background-attachment: fixed;
+            min-height: 100vh;
+            color: var(--text-primary);
+            overflow-x: hidden;
+            overscroll-behavior: none;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: -200px;
+            left: 0;
+            right: 0;
+            height: 200px;
+            background: var(--bg-primary);
+            z-index: -1;
+        }
+
+        .app-container {
+            max-width: 428px;
+            margin: 0 auto;
+            padding: var(--safe-top) 20px 0 20px;
+            padding-bottom: calc(100px + var(--safe-bottom));
+            min-height: 100vh;
+        }
+
+        .app-header {
+            background: var(--bg-glass);
+            backdrop-filter: var(--blur-medium);
+            border: 1px solid var(--border-primary);
+            border-radius: 24px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow-medium);
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .avatar {
+            width: 56px;
+            height: 56px;
+            background: var(--gradient-primary);
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+            box-shadow: var(--shadow-medium);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .avatar::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        .header-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .header-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+            line-height: 1.2;
+            background: var(--gradient-primary);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header-subtitle {
+            font-size: 15px;
+            color: var(--text-secondary);
+            font-weight: 500;
+            line-height: 1.2;
+        }
+
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.04);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            border-radius: 16px;
+            padding: 16px 12px;
+            text-align: center;
+            transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--gradient-primary);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .stat-card:active {
+            transform: scale(0.95);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .stat-card:active::before {
+            opacity: 1;
+        }
+
+        .stat-value {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text-primary);
+            line-height: 1;
+            margin-bottom: 6px;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .stat-label {
+            font-size: 11px;
+            color: var(--text-tertiary);
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            font-weight: 600;
+            line-height: 1;
+        }
+
+        .card {
+            background: var(--bg-glass);
+            backdrop-filter: var(--blur-medium);
+            border: 1px solid var(--border-primary);
+            border-radius: 24px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow-medium);
+            transition: all 0.4s cubic-bezier(0.4, 0.0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--gradient-primary);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .card-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            line-height: 1.2;
+        }
+
+        .btn {
+            background: var(--gradient-primary);
+            border: none;
+            border-radius: 16px;
+            padding: 18px 24px;
+            color: white;
+            font-size: 17px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+            width: 100%;
+            margin: 12px 0;
+            min-height: 56px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+            text-decoration: none;
+        }
+
+        .btn:active {
+            transform: scale(0.96);
+            box-shadow: var(--shadow-medium);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border-primary);
+            color: var(--text-primary);
+        }
+
+        .empty {
+            text-align: center;
+            padding: 48px 24px;
+            color: var(--text-secondary);
+            background: rgba(255, 255, 255, 0.02);
+            border: 2px dashed rgba(255, 255, 255, 0.04);
+            border-radius: 20px;
+        }
+
+        .empty-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+            opacity: 0.7;
+        }
+
+        .empty-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: var(--text-primary);
+        }
+
+        .empty-subtitle {
+            font-size: 15px;
+            color: var(--text-tertiary);
+            line-height: 1.4;
+        }
+
+        .item {
+            background: rgba(255, 255, 255, 0.04);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            border-radius: 18px;
+            padding: 20px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+        }
+
+        .item:active {
+            transform: scale(0.98);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .item-icon {
+            font-size: 26px;
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.06);
+            border-radius: 14px;
+            flex-shrink: 0;
+        }
+
+        .item-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .item-title {
+            font-size: 17px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+            line-height: 1.3;
+            word-wrap: break-word;
+        }
+
+        .item-subtitle {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.3;
+            word-wrap: break-word;
+        }
+
+        .progress-container {
+            margin: 16px 0;
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .progress-label {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .progress-percent {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--accent-orange);
+            font-variant-numeric: tabular-nums;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.8s cubic-bezier(0.4, 0.0, 0.2, 1);
+        }
+
+        .challenge {
+            background: linear-gradient(135deg, rgba(255, 149, 0, 0.1) 0%, rgba(255, 59, 48, 0.05) 100%);
+            border: 1px solid rgba(255, 149, 0, 0.2);
+            border-radius: 20px;
+            padding: 24px;
+            position: relative;
+        }
+
+        .challenge::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent-orange), var(--accent-red));
+            border-radius: 20px 20px 0 0;
+        }
+
+        .challenge-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 20px;
+            gap: 16px;
+        }
+
+        .challenge-title {
+            font-size: 19px;
+            font-weight: 700;
+            color: var(--text-primary);
+            flex: 1;
+            line-height: 1.3;
+        }
+
+        .challenge-status {
+            background: var(--accent-blue);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            flex-shrink: 0;
+        }
+
+        .challenge-days {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 16px;
+        }
+
+        .challenge-day {
+            width: 36px;
+            height: 36px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 2px solid var(--border-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text-tertiary);
+            transition: all 0.3s ease;
+        }
+
+        .challenge-day.completed {
+            background: var(--accent-green);
+            border-color: var(--accent-green);
+            color: white;
+            box-shadow: 0 4px 16px rgba(52, 199, 89, 0.3);
+        }
+
+        .challenge-day.today {
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 0 2px rgba(0, 122, 255, 0.2);
+        }
+
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(28, 28, 30, 0.95);
+            backdrop-filter: blur(40px);
+            border-top: 1px solid var(--border-primary);
+            padding: 8px 20px calc(8px + var(--safe-bottom)) 20px;
+            z-index: 1000;
+        }
+
+        .nav-container {
+            max-width: 428px;
+            margin: 0 auto;
+        }
+
+        .nav-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 4px;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 8px 4px;
+            border-radius: 14px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+            color: var(--text-tertiary);
+            position: relative;
+            text-decoration: none;
+        }
+
+        .nav-item.active {
+            color: var(--accent-blue);
+            transform: scale(1.05);
+        }
+
+        .nav-item.active::before {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 24px;
+            height: 2px;
+            background: var(--accent-blue);
+            border-radius: 1px;
+        }
+
+        .nav-item:active {
+            transform: scale(0.9);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .nav-icon {
+            font-size: 22px;
+            margin-bottom: 4px;
+            line-height: 1;
+        }
+
+        .nav-label {
+            font-size: 10px;
+            font-weight: 600;
+            line-height: 1;
+        }
+
+        .editable {
+            cursor: pointer;
+            border-radius: 8px;
+            padding: 4px 6px;
+            margin: -4px -6px;
+            transition: all 0.2s ease;
+        }
+
+        .editable:active {
+            background: rgba(0, 122, 255, 0.1);
+        }
+
+        .editable.editing {
+            background: rgba(0, 122, 255, 0.15);
+        }
+
+        .editable input {
+            background: transparent;
+            border: none;
+            outline: none;
+            font: inherit;
+            color: inherit;
+            width: 100%;
+        }
+
+        @media (max-width: 430px) {
+            .app-container {
+                padding-left: 16px;
+                padding-right: 16px;
+            }
+        }
+
+        @media (max-width: 390px) {
+            .app-container {
+                padding-left: 12px;
+                padding-right: 12px;
+            }
+            .card {
+                padding: 20px;
+            }
+        }
+
+        body {
+            overscroll-behavior-y: none;
+        }
+
+        ::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* Toast animation styles */
+        @keyframes toastAnimation {
+            0% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
+            10% { opacity: 1; transform: translate(-50%, -50%) scale(1.05); }
+            90% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+            100% { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-content">
+                <div class="avatar">🚀</div>
+                <div class="header-info">
+                    <h1 class="header-title editable" onclick="editText(this)">Hey Bennet! 👋</h1>
+                    <p class="header-subtitle" id="currentDate">Lade...</p>
+                </div>
+            </div>
+            <div class="stats-container">
+                <div class="stat-card">
+                    <div class="stat-value" id="habitStreak">0</div>
+                    <div class="stat-label">Day Streak</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="completionRate">0%</div>
+                    <div class="stat-label">Success Rate</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="todayTasks">0/0</div>
+                    <div class="stat-label">Today</div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Dashboard Content -->
+        <main>
+            <!-- Current Challenge Widget -->
+            <section class="card">
+                <h2 class="card-title">🔥 Aktuelle Challenge</h2>
+                <div id="currentChallengeWidget">
+                    <div class="empty">
+                        <div class="empty-icon">🎯</div>
+                        <div class="empty-title">Keine aktive Challenge</div>
+                        <p class="empty-subtitle">Starte eine neue Challenge!</p>
+                    </div>
+                </div>
+                <a href="challenges.html" class="btn">Challenge verwalten</a>
+            </section>
+
+            <!-- Today's Habits -->
+            <section class="card">
+                <h2 class="card-title">🔄 Heute's Habits</h2>
+                <div id="todayHabitsContainer">
+                    <div class="empty">
+                        <div class="empty-icon">🌟</div>
+                        <div class="empty-title">Noch keine Habits</div>
+                        <p class="empty-subtitle">Füge dein erstes Habit hinzu!</p>
+                    </div>
+                </div>
+                <a href="habits.html" class="btn btn-secondary">Habits verwalten</a>
+            </section>
+
+            <!-- Goals Progress -->
+            <section class="card">
+                <h2 class="card-title">🎯 Ziele Progress</h2>
+                <div id="goalsOverview">
+                    <div class="empty">
+                        <div class="empty-icon">🎯</div>
+                        <div class="empty-title">Noch keine Ziele</div>
+                        <p class="empty-subtitle">Setze dir dein erstes Ziel!</p>
+                    </div>
+                </div>
+                <a href="goals.html" class="btn btn-secondary">Ziele verwalten</a>
+            </section>
+
+            <!-- Recent Ideas -->
+            <section class="card">
+                <h2 class="card-title">💡 Letzte Ideen</h2>
+                <div id="recentIdeas">
+                    <div class="empty">
+                        <div class="empty-icon">💡</div>
+                        <div class="empty-title">Noch keine Ideen</div>
+                        <p class="empty-subtitle">Sammle deine ersten Ideen!</p>
+                    </div>
+                </div>
+                <a href="ideas.html" class="btn btn-secondary">Ideen sammeln</a>
+            </section>
+
+            <!-- Daily Motivation -->
+            <section class="card">
+                <h2 class="card-title">💡 Daily Motivation</h2>
+                <div style="text-align: center; margin-bottom: 24px;">
+                    <div style="font-size: 40px; margin-bottom: 16px;">🎯</div>
+                    <h3 style="font-size: 20px; font-weight: 700; margin-bottom: 16px; line-height: 1.3; color: var(--text-primary);" id="motivationTitle">Build Systems, Not Goals</h3>
+                    <p style="font-size: 16px; line-height: 1.5; margin-bottom: 12px; color: var(--text-secondary);" id="motivationText">
+                        "You do not rise to the level of your goals. You fall to the level of your systems."
+                    </p>
+                    <p style="font-size: 14px; color: var(--accent-blue); font-weight: 600;" id="motivationAuthor">
+                        — James Clear
+                    </p>
+                </div>
+                <button class="btn btn-secondary" onclick="getNewQuote()">
+                    Neues Zitat laden
+                </button>
+            </section>
+        </main>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+        <div class="nav-container">
+            <div class="nav-grid">
+                <a href="index.html" class="nav-item active">
+                    <div class="nav-icon">🏠</div>
+                    <div class="nav-label">Home</div>
+                </a>
+                <a href="habits.html" class="nav-item">
+                    <div class="nav-icon">🔄</div>
+                    <div class="nav-label">Habits</div>
+                </a>
+                <a href="challenges.html" class="nav-item">
+                    <div class="nav-icon">🔥</div>
+                    <div class="nav-label">Challenges</div>
+                </a>
+                <a href="goals.html" class="nav-item">
+                    <div class="nav-icon">🎯</div>
+                    <div class="nav-label">Goals</div>
+                </a>
+                <a href="ideas.html" class="nav-item">
+                    <div class="nav-icon">💡</div>
+                    <div class="nav-label">Ideas</div>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <script>
+        // Shared Storage Keys
+        const STORAGE_KEYS = {
+            habits: 'entrepreneurDashboard_habits',
+            goals: 'entrepreneurDashboard_goals',
+            challenges: 'entrepreneurDashboard_challenges',
+            ideas: 'entrepreneurDashboard_ideas',
+            settings: 'entrepreneurDashboard_settings'
+        };
+
+        // Motivational Quotes
+        const motivationalQuotes = [
+            {
+                title: "Build Systems, Not Goals",
+                text: "You do not rise to the level of your goals. You fall to the level of your systems.",
+                author: "James Clear"
+            },
+            {
+                title: "Start Before You're Ready",
+                text: "The way to get started is to quit talking and begin doing.",
+                author: "Walt Disney"
+            },
+            {
+                title: "Perfect Timing Is Myth",
+                text: "You don't have to be great to get started, but you have to get started to be great.",
+                author: "Les Brown"
+            },
+            {
+                title: "Embrace Failure",
+                text: "Failure is simply the opportunity to begin again, this time more intelligently.",
+                author: "Henry Ford"
+            },
+            {
+                title: "Action Over Perfection",
+                text: "Done is better than perfect.",
+                author: "Sheryl Sandberg"
+            }
+        ];
+
+        // Load data from localStorage
+        function loadData(key) {
+            try {
+                const data = localStorage.getItem(STORAGE_KEYS[key]);
+                return data ? JSON.parse(data) : [];
+            } catch (e) {
+                console.error(`Error loading ${key}:`, e);
+                return [];
+            }
+        }
+
+        // Load challenges from localStorage
+        function loadChallenges() {
+            try {
+                const data = localStorage.getItem(STORAGE_KEYS.challenges);
+                return data ? JSON.parse(data) : [];
+            } catch (e) {
+                console.error('Error loading challenges:', e);
+                return [];
+            }
+        }
+
+        // Calculate days remaining for a challenge
+        function getDaysRemaining(challenge) {
+            if (challenge.completed) return 0;
+            
+            const now = Date.now();
+            const endDate = challenge.startDate + (challenge.duration * 24 * 60 * 60 * 1000);
+            const remaining = Math.ceil((endDate - now) / (24 * 60 * 60 * 1000));
+            
+            return Math.max(0, remaining);
+        }
+
+        // Calculate progress percentage for a challenge
+        function getChallengeProgress(challenge) {
+            if (challenge.completed) return 100;
+            
+            const now = Date.now();
+            const elapsed = now - challenge.startDate;
+            const total = challenge.duration * 24 * 60 * 60 * 1000;
+            const progress = Math.min(100, Math.max(0, (elapsed / total) * 100));
+            
+            return Math.round(progress);
+        }
+
+        // Format date for display
+        function formatDate(timestamp) {
+            const date = new Date(timestamp);
+            return date.toLocaleDateString('de-DE', {
+                day: '2-digit',
+                month: '2-digit'
+            });
+        }
+
+        // Calculate stats from data
+        function calculateStats() {
+            const habits = loadData('habits');
+            const challenges = loadData('challenges');
+            
+            if (habits.length === 0) {
+                return { streak: 0, completionRate: 0, todayCompleted: 0, totalHabits: 0 };
+            }
+
+            // Calculate current streak
+            let currentStreak = 0;
+            for (let i = 6; i >= 0; i--) {
+                const todayCompleted = habits.filter(h => h.streak && h.streak[i]).length;
+                const requiredHabits = Math.ceil(habits.length * 0.7);
+                
+                if (todayCompleted >= requiredHabits) {
+                    currentStreak++;
+                } else {
+                    break;
+                }
+            }
+            
+            // Calculate completion rate
+            const totalPossible = habits.length * 7;
+            const totalCompleted = habits.reduce((sum, habit) => 
+                sum + (habit.streak ? habit.streak.reduce((daySum, day) => daySum + day, 0) : 0), 0);
+            const completionRate = totalPossible > 0 ? Math.round((totalCompleted / totalPossible) * 100) : 0;
+            
+            // Today's completion
+            const todayCompleted = habits.filter(h => h.streak && h.streak[6]).length;
+            
+            return {
+                streak: currentStreak,
+                completionRate: completionRate,
+                todayCompleted: todayCompleted,
+                totalHabits: habits.length
+            };
+        }
+
+        // Update stats in header
+        function updateStats() {
+            const stats = calculateStats();
+            
+            document.getElementById('habitStreak').textContent = stats.streak;
+            document.getElementById('completionRate').textContent = stats.completionRate + '%';
+            document.getElementById('todayTasks').textContent = `${stats.todayCompleted}/${stats.totalHabits}`;
+        }
+    
