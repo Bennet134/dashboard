@@ -538,7 +538,7 @@
 
         .nav-grid {
             display: grid;
-            grid-template-columns: repeat(5, 1fr);
+            grid-template-columns: repeat(6, 1fr);
             gap: 4px;
         }
 
@@ -703,6 +703,19 @@
                 <a href="habits.html" class="btn btn-secondary">Habits verwalten</a>
             </section>
 
+            <!-- Today's Schedule Widget -->
+            <section class="card">
+                <h2 class="card-title">📅 Heutiger Tagesplan</h2>
+                <div id="todayScheduleWidget">
+                    <div class="empty">
+                        <div class="empty-icon">📅</div>
+                        <div class="empty-title">Noch kein Tagesplan</div>
+                        <p class="empty-subtitle">Plane deinen Tag für maximale Produktivität!</p>
+                    </div>
+                </div>
+                <a href="tagesplan.html" class="btn">Tagesplan verwalten</a>
+            </section>
+
             <!-- Goals Progress -->
             <section class="card">
                 <h2 class="card-title">🎯 Ziele Progress</h2>
@@ -761,6 +774,10 @@
                     <div class="nav-icon">🔄</div>
                     <div class="nav-label">Habits</div>
                 </a>
+                <a href="tagesplan.html" class="nav-item">
+                    <div class="nav-icon">📅</div>
+                    <div class="nav-label">Tagesplan</div>
+                </a>
                 <a href="challenges.html" class="nav-item">
                     <div class="nav-icon">🔥</div>
                     <div class="nav-label">Challenges</div>
@@ -784,6 +801,7 @@
             goals: 'entrepreneurDashboard_goals',
             challenges: 'entrepreneurDashboard_challenges',
             ideas: 'entrepreneurDashboard_ideas',
+            dailyPlans: 'entrepreneurDashboard_dailyPlans',
             settings: 'entrepreneurDashboard_settings'
         };
 
@@ -1050,6 +1068,69 @@
             `;
         }
 
+        // Render today's schedule
+        function renderTodaySchedule() {
+            const dailyPlans = loadData('dailyPlans');
+            const container = document.getElementById('todayScheduleWidget');
+            
+            // Get today's date in YYYY-MM-DD format
+            const today = new Date().toISOString().split('T')[0];
+            const todayPlan = dailyPlans.find(plan => plan.date === today);
+            
+            if (!todayPlan || !todayPlan.tasks || todayPlan.tasks.length === 0) {
+                container.innerHTML = `
+                    <div class="empty">
+                        <div class="empty-icon">📅</div>
+                        <div class="empty-title">Noch kein Tagesplan</div>
+                        <p class="empty-subtitle">Plane deinen Tag für maximale Produktivität!</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            // Sort tasks by time
+            const sortedTasks = todayPlan.tasks.sort((a, b) => {
+                if (!a.time && !b.time) return 0;
+                if (!a.time) return 1;
+                if (!b.time) return -1;
+                return a.time.localeCompare(b.time);
+            }).slice(0, 4); // Show max 4 tasks
+            
+            const completedTasks = todayPlan.tasks.filter(t => t.completed).length;
+            const totalTasks = todayPlan.tasks.length;
+            const progress = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
+            
+            const tasksList = sortedTasks.map(task => {
+                const timeStr = task.time ? task.time.substring(0, 5) : '';
+                const priorityEmojis = { high: '🔴', medium: '🟡', low: '🟢' };
+                return `
+                    <a href="tagesplan.html" class="item">
+                        <div class="item-icon">${task.completed ? '✅' : (priorityEmojis[task.priority] || '⚪')}</div>
+                        <div class="item-content">
+                            <div class="item-title">${task.title}</div>
+                            <div class="item-subtitle">${task.description || 'Keine Beschreibung'}</div>
+                            <div class="item-meta">${timeStr ? `${timeStr} Uhr` : 'Keine Zeit'} ${task.completed ? '• Erledigt' : ''}</div>
+                        </div>
+                    </a>
+                `;
+            }).join('');
+            
+            container.innerHTML = `
+                <div class="overview-grid">
+                    <div class="overview-item">
+                        <div class="overview-value">${completedTasks}/${totalTasks}</div>
+                        <div class="overview-label">Aufgaben</div>
+                    </div>
+                    <div class="overview-item">
+                        <div class="overview-value">${progress}%</div>
+                        <div class="overview-label">Fortschritt</div>
+                    </div>
+                </div>
+                ${tasksList}
+                ${totalTasks > 4 ? `<div style="text-align: center; margin-top: 12px; color: var(--text-tertiary); font-size: 12px;">+${totalTasks - 4} weitere Aufgaben</div>` : ''}
+            `;
+        }
+
         // Render goals overview
         function renderGoalsOverview() {
             const goals = loadData('goals');
@@ -1287,6 +1368,7 @@
             updateStats();
             renderCurrentChallenge();
             renderTodayHabits();
+            renderTodaySchedule();
             renderGoalsOverview();
             renderRecentIdeas();
 
@@ -1301,12 +1383,14 @@
                 updateCurrentDate();
                 updateStats();
                 renderTodayHabits();
+                renderTodaySchedule();
                 
                 // Set daily interval for future updates
                 setInterval(() => {
                     updateCurrentDate();
                     updateStats();
                     renderTodayHabits();
+                    renderTodaySchedule();
                 }, 24 * 60 * 60 * 1000);
             }, msUntilMidnight);
 
@@ -1333,6 +1417,7 @@
                 updateStats();
                 renderCurrentChallenge();
                 renderTodayHabits();
+                renderTodaySchedule();
                 renderGoalsOverview();
                 renderRecentIdeas();
                 console.log('🔄 Dashboard data synchronized from other page');
@@ -1346,6 +1431,7 @@
                 updateStats();
                 renderCurrentChallenge();
                 renderTodayHabits();
+                renderTodaySchedule();
                 renderGoalsOverview();
                 renderRecentIdeas();
             }
@@ -1359,6 +1445,7 @@
             updateStats();
             renderCurrentChallenge();
             renderTodayHabits();
+            renderTodaySchedule();
             renderGoalsOverview();
             renderRecentIdeas();
         }, 5 * 60 * 1000);
@@ -1373,6 +1460,13 @@
                     if (e.altKey || e.metaKey) {
                         e.preventDefault();
                         window.location.href = 'habits.html';
+                    }
+                    break;
+                case 't':
+                case 'T':
+                    if (e.altKey || e.metaKey) {
+                        e.preventDefault();
+                        window.location.href = 'tagesplan.html';
                     }
                     break;
                 case 'g':
@@ -1425,6 +1519,7 @@
                 updateStats();
                 renderCurrentChallenge();
                 renderTodayHabits();
+                renderTodaySchedule();
                 renderGoalsOverview();
                 renderRecentIdeas();
             },
@@ -1433,7 +1528,7 @@
         };
 
         console.log('🔧 Debug functions available: window.dashboardDebug');
-        console.log('⌨️ Keyboard shortcuts: Alt+H (Habits), Alt+G (Goals), Alt+C (Challenges), Alt+I (Ideas), Alt+Q (New Quote)');
+        console.log('⌨️ Keyboard shortcuts: Alt+H (Habits), Alt+T (Tagesplan), Alt+G (Goals), Alt+C (Challenges), Alt+I (Ideas), Alt+Q (New Quote)');
     </script>
 </body>
 </html>
